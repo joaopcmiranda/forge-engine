@@ -1,12 +1,12 @@
-mod vector3;
 mod vector2;
+mod vector;
 mod vector4;
 
 // Re-export the main types for convenience
-pub use vector3::Vector3 as Vector;
-pub use vector2::Vector2 as Vector2;
-pub use vector4::Vector4 as Vector4;
-
+pub use vector2::Vector2;
+pub use vector::Vector;
+pub type Vector3 = Vector;
+pub use vector4::Vector4;
 
 #[cfg(test)]
 mod tests {
@@ -17,7 +17,6 @@ mod tests {
     fn approx_eq(a: f32, b: f32) -> bool {
         (a - b).abs() < 1e-6
     }
-
 
     // ============ Cross-type Tests ============
     #[cfg(test)]
