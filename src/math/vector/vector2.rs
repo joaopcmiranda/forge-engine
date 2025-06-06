@@ -4,8 +4,8 @@
 //! operations, conversions, and utility functions commonly needed in graphics,
 //! physics, and game development.
 
-use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 use crate::math::Vector;
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 
 /// A 2D vector with `x` and `y` components.
 ///
@@ -152,7 +152,64 @@ impl From<Vector2> for [f32; 2] {
 }
 
 // Operators
+impl Index<usize> for Vector2 {
+    type Output = f32;
 
+    /// Access vector components by index.
+    ///
+    /// # Indexing
+    /// - `0` returns the x component
+    /// - `1` returns the y component
+    ///
+    /// # Panics
+    /// Panics if the index is greater than 1.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use crate::forge_engine::math::Vector2;
+    ///
+    /// let v = Vector2::new(3.0, 4.0);
+    /// assert_eq!(v[0], 3.0);  // x component
+    /// assert_eq!(v[1], 4.0);  // y component
+    /// ```
+    fn index(&self, index: usize) -> &Self::Output {
+        match index {
+            0 => &self.x,
+            1 => &self.y,
+            _ => panic!("Vector2 index {} out of bounds (0..2)", index),
+        }
+    }
+}
+
+impl IndexMut<usize> for Vector2 {
+    /// Mutably access vector components by index.
+    ///
+    /// # Indexing
+    /// - `0` returns the x component
+    /// - `1` returns the y component
+    ///
+    /// # Panics
+    /// Panics if the index is greater than 1.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use crate::forge_engine::math::Vector2;
+    ///
+    /// let mut v = Vector2::new(3.0, 4.0);
+    /// v[0] = 5.0;  // Set x component
+    /// v[1] = 6.0;  // Set y component
+    /// assert_eq!(v, Vector2::new(5.0, 6.0));
+    /// ```
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        match index {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            _ => panic!("Vector2 index {} out of bounds (0..2)", index),
+        }
+    }
+}
 /// Adds two vectors component-wise.
 impl Add for Vector2 {
     type Output = Vector2;
@@ -1083,6 +1140,27 @@ mod tests {
         fn test_vector2_default() {
             let v: Vector2 = Default::default();
             assert_eq!(v, Vector2::ZERO);
+        }
+        
+        #[test]
+        fn test_vector2_indexing() {
+            let mut v = Vector2::new(3.0, 4.0);
+
+            // Read access
+            assert_eq!(v[0], 3.0);
+            assert_eq!(v[1], 4.0);
+
+            // Write access
+            v[0] = 5.0;
+            v[1] = 6.0;
+            assert_eq!(v, Vector2::new(5.0, 6.0));
+        }
+
+        #[test]
+        #[should_panic(expected = "Vector2 index 2 out of bounds")]
+        fn test_vector2_index_out_of_bounds() {
+            let v = Vector2::new(1.0, 2.0);
+            let _ = v[2];
         }
     }
 }

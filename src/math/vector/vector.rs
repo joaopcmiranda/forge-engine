@@ -4,8 +4,8 @@
 //! operations, conversions, and utility functions commonly needed in graphics,
 //! physics, and game development.
 
-use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 use crate::math::Vector2;
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 
 /// A 3D vector with `x`, `y`, and `z` components.
 ///
@@ -191,6 +191,71 @@ impl From<Vector> for [f32; 3] {
 }
 
 // Operators
+
+impl Index<usize> for Vector {
+    type Output = f32;
+
+    /// Access vector components by index.
+    ///
+    /// # Indexing
+    /// - `0` returns the x component
+    /// - `1` returns the y component
+    /// - `2` returns the z component
+    ///
+    /// # Panics
+    /// Panics if the index is greater than 2.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use crate::forge_engine::Vector;
+    ///
+    /// let v = Vector::new(1.0, 2.0, 3.0);
+    /// assert_eq!(v[0], 1.0);  // x component
+    /// assert_eq!(v[1], 2.0);  // y component
+    /// assert_eq!(v[2], 3.0);  // z component
+    /// ```
+    fn index(&self, index: usize) -> &Self::Output {
+        match index {
+            0 => &self.x,
+            1 => &self.y,
+            2 => &self.z,
+            _ => panic!("Vector index {} out of bounds (0..3)", index),
+        }
+    }
+}
+
+impl IndexMut<usize> for Vector {
+    /// Mutably access vector components by index.
+    ///
+    /// # Indexing
+    /// - `0` returns the x component
+    /// - `1` returns the y component
+    /// - `2` returns the z component
+    ///
+    /// # Panics
+    /// Panics if the index is greater than 2.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use crate::forge_engine::Vector;
+    ///
+    /// let mut v = Vector::new(1.0, 2.0, 3.0);
+    /// v[0] = 5.0;  // Set x component
+    /// v[1] = 6.0;  // Set y component
+    /// v[2] = 7.0;  // Set z component
+    /// assert_eq!(v, Vector::new(5.0, 6.0, 7.0));
+    /// ```
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        match index {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            2 => &mut self.z,
+            _ => panic!("Vector index {} out of bounds (0..3)", index),
+        }
+    }
+}
 
 /// Adds two vectors component-wise.
 impl Add for Vector {
@@ -382,7 +447,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// let v = Vector::new(4.0, 9.0, 16.0);
     /// let roots = v.sqrt();
     /// assert_eq!(roots, Vector::new(2.0, 3.0, 4.0));
@@ -405,7 +470,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// let a = Vector::new(1.0, 0.0, 0.0);
     /// let b = Vector::new(0.0, 1.0, 0.0);
     /// let c = a.cross(b);
@@ -429,7 +494,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// let v = Vector::new(2.0, 3.0, 6.0);
     /// assert_eq!(v.magnitude(), 7.0);
     /// ```
@@ -447,7 +512,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// let v = Vector::new(2.0, 3.0, 6.0);
     /// assert_eq!(v.magnitude_squared(), 49.0);
     /// ```
@@ -464,7 +529,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// let v = Vector::new(0.0, 3.0, 4.0);
     /// let normalized = v.normalized();
     /// assert_eq!(normalized, Vector::new(0.0, 0.6, 0.8));
@@ -488,7 +553,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// assert!(Vector::ZERO.is_zero());
     /// assert!(!Vector::ONE.is_zero());
     /// ```
@@ -505,7 +570,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// assert!(Vector::RIGHT.is_normalised());
     /// assert!(!Vector::new(2.0, 3.0, 6.0).is_normalised());
     /// ```
@@ -522,7 +587,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// let v = Vector::new(3.0, 4.0, 0.0);
     /// assert!(v.safe_normal().is_some());
     /// assert!(Vector::ZERO.safe_normal().is_none());
@@ -546,7 +611,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// let a = Vector::new(0.0, 0.0, 0.0);
     /// let b = Vector::new(10.0, 20.0, 30.0);
     /// let mid = a.lerp(b, 0.5);
@@ -566,7 +631,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// let a = Vector::new(1.0, 2.0, 3.0);
     /// let b = Vector::new(4.0, 6.0, 8.0);
     /// let dist = a.distance(b);
@@ -594,7 +659,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// let v = Vector::new(-1.0, 2.0, -3.0);
     /// assert_eq!(v.abs(), Vector::new(1.0, 2.0, 3.0));
     /// ```
@@ -612,7 +677,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// let a = Vector::new(1.0, 5.0, 3.0);
     /// let b = Vector::new(4.0, 2.0, 6.0);
     /// assert_eq!(a.min(b), Vector::new(1.0, 2.0, 3.0));
@@ -635,7 +700,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// let a = Vector::new(1.0, 5.0, 3.0);
     /// let b = Vector::new(4.0, 2.0, 6.0);
     /// assert_eq!(a.max(b), Vector::new(4.0, 5.0, 6.0));
@@ -659,7 +724,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// let v = Vector::new(-1.0, 5.0, 2.0);
     /// let min = Vector::new(0.0, 0.0, 0.0);
     /// let max = Vector::new(3.0, 3.0, 3.0);
@@ -681,7 +746,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// use std::f32::consts::PI;
     /// let a = Vector::new(1.0, 0.0, 0.0);
     /// let b = Vector::new(0.0, 1.0, 0.0);
@@ -706,7 +771,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// let v = Vector::new(3.0, 4.0, 5.0);
     /// let onto = Vector::new(1.0, 0.0, 0.0);
     /// let proj = v.project_onto(onto);
@@ -733,7 +798,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// let v = Vector::new(3.0, 4.0, 5.0);
     /// let from = Vector::new(1.0, 0.0, 0.0);
     /// let rej = v.reject_from(from);
@@ -755,7 +820,7 @@ impl Vector {
     ///
     /// ```rust
     /// use crate::forge_engine::Vector;
-    /// 
+    ///
     /// let v = Vector::new(1.0, -1.0, 0.0);
     /// let normal = Vector::new(0.0, 1.0, 0.0);
     /// let reflected = v.reflect(normal);
@@ -775,7 +840,7 @@ impl Vector {
     /// ```rust
     /// use crate::forge_engine::Vector;
     /// use crate::forge_engine::math::Vector2;
-    /// 
+    ///
     /// let v3 = Vector::new(1.0, 2.0, 3.0);
     /// let v2 = v3.vec2();
     /// assert_eq!(v2, Vector2::new(1.0, 2.0));
@@ -925,7 +990,7 @@ mod tests {
             let b = Vector::new(5.0, 6.0, 7.0);
             assert_eq!(a / b, Vector::new(2.0, 3.0, 4.0));
             assert_eq!(a / 2.0, Vector::new(5.0, 9.0, 14.0));
-            assert_eq!(60.0 / a, Vector::new(6.0, 60.0/18.0, 60.0/28.0));
+            assert_eq!(60.0 / a, Vector::new(6.0, 60.0 / 18.0, 60.0 / 28.0));
         }
 
         #[test]
@@ -1092,6 +1157,41 @@ mod tests {
         fn test_vector3_default() {
             let v: Vector = Default::default();
             assert_eq!(v, Vector::ZERO);
+        }
+
+        #[test]
+        fn test_vector3_indexing() {
+            let mut v = Vector::new(1.0, 2.0, 3.0);
+
+            // Read access
+            assert_eq!(v[0], 1.0);
+            assert_eq!(v[1], 2.0);
+            assert_eq!(v[2], 3.0);
+
+            // Write access
+            v[0] = 5.0;
+            v[1] = 6.0;
+            v[2] = 7.0;
+            assert_eq!(v, Vector::new(5.0, 6.0, 7.0));
+        }
+
+        #[test]
+        #[should_panic(expected = "Vector index 3 out of bounds")]
+        fn test_vector3_index_out_of_bounds() {
+            let v = Vector::new(1.0, 2.0, 3.0);
+            let _ = v[3];
+        }
+
+        #[test]
+        fn test_indexing_in_loops() {
+            let mut v3 = Vector::new(1.0, 2.0, 3.0);
+
+            // Modify all components
+            for i in 0..3 {
+                v3[i] *= 2.0;
+            }
+
+            assert_eq!(v3, Vector::new(2.0, 4.0, 6.0));
         }
     }
 }

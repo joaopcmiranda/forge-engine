@@ -1,10 +1,10 @@
-mod vector2;
 mod vector;
+mod vector2;
 mod vector4;
 
 // Re-export the main types for convenience
-pub use vector2::Vector2;
 pub use vector::Vector;
+pub use vector2::Vector2;
 pub type Vector3 = Vector;
 pub use vector4::Vector4;
 

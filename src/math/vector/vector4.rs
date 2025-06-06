@@ -5,8 +5,8 @@
 //! physics, and game development. Vector4 is commonly used for homogeneous
 //! coordinates, RGBA colors, quaternions, and other 4D mathematical operations.
 
-use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 use crate::math::{Vector, Vector2};
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 
 /// A 4D vector with `x`, `y`, `z`, and `w` components.
 ///
@@ -97,7 +97,12 @@ impl Vector4 {
     /// let direction = Vector4::from_vec3(Vector::new(0.0, 1.0, 0.0), 0.0);
     /// ```
     pub fn from_vec3(v: Vector, w: f32) -> Self {
-        Vector4 { x: v.x, y: v.y, z: v.z, w }
+        Vector4 {
+            x: v.x,
+            y: v.y,
+            z: v.z,
+            w,
+        }
     }
 }
 
@@ -221,6 +226,22 @@ impl From<[f32; 4]> for Vector4 {
     }
 }
 
+/// Converts a single `f32` into a `Vector4` with all components set to that value.
+///
+/// # Examples
+///
+/// ```rust
+/// use crate::forge_engine::math::Vector4;
+///
+/// let v: Vector4 = 3.0.into();
+/// assert_eq!(v, Vector4::new(3.0, 3.0, 3.0, 3.0));
+/// ```
+impl From<f32> for Vector4  {
+    fn from(value: f32) -> Self {
+        Vector4::new(value, value, value, value)
+    }
+}
+
 /// Converts a `Vector4` into a tuple `(f32, f32, f32, f32)`.
 impl From<Vector4> for (f32, f32, f32, f32) {
     fn from(v: Vector4) -> Self {
@@ -250,6 +271,77 @@ impl From<Vector4> for Vector {
 }
 
 // Operators
+
+impl Index<usize> for Vector4 {
+    type Output = f32;
+
+    /// Access vector components by index.
+    ///
+    /// # Indexing
+    /// - `0` returns the x component
+    /// - `1` returns the y component
+    /// - `2` returns the z component
+    /// - `3` returns the w component
+    ///
+    /// # Panics
+    /// Panics if the index is greater than 3.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use crate::forge_engine::math::Vector4;
+    ///
+    /// let v = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// assert_eq!(v[0], 1.0);  // x component
+    /// assert_eq!(v[1], 2.0);  // y component
+    /// assert_eq!(v[2], 3.0);  // z component
+    /// assert_eq!(v[3], 4.0);  // w component
+    /// ```
+    fn index(&self, index: usize) -> &Self::Output {
+        match index {
+            0 => &self.x,
+            1 => &self.y,
+            2 => &self.z,
+            3 => &self.w,
+            _ => panic!("Vector4 index {} out of bounds (0..4)", index),
+        }
+    }
+}
+
+impl IndexMut<usize> for Vector4 {
+    /// Mutably access vector components by index.
+    ///
+    /// # Indexing
+    /// - `0` returns the x component
+    /// - `1` returns the y component
+    /// - `2` returns the z component
+    /// - `3` returns the w component
+    ///
+    /// # Panics
+    /// Panics if the index is greater than 3.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use crate::forge_engine::math::Vector4;
+    ///
+    /// let mut v = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// v[0] = 5.0;  // Set x component
+    /// v[1] = 6.0;  // Set y component
+    /// v[2] = 7.0;  // Set z component
+    /// v[3] = 8.0;  // Set w component
+    /// assert_eq!(v, Vector4::new(5.0, 6.0, 7.0, 8.0));
+    /// ```
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        match index {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            2 => &mut self.z,
+            3 => &mut self.w,
+            _ => panic!("Vector4 index {} out of bounds (0..4)", index),
+        }
+    }
+}
 
 /// Adds two vectors component-wise.
 impl Add for Vector4 {
@@ -404,6 +496,18 @@ impl MulAssign<Vector4> for Vector4 {
     }
 }
 
+/// Divides this vector by another vector component-wise.
+impl MulAssign<f32> for Vector4 {
+    fn mul_assign(&mut self, other: f32) {
+        *self = Vector4::new(
+            self.x * other,
+            self.y * other,
+            self.z * other,
+            self.w * other,
+        );
+    }
+}
+
 /// Divides two vectors component-wise.
 impl Div<Vector4> for Vector4 {
     type Output = Vector4;
@@ -451,6 +555,18 @@ impl DivAssign<Vector4> for Vector4 {
             self.y / other.y,
             self.z / other.z,
             self.w / other.w,
+        );
+    }
+}
+
+/// Divides this vector by a scalar in place.
+impl DivAssign<f32> for Vector4 {
+    fn div_assign(&mut self, other: f32) {
+        *self = Vector4::new(
+            self.x / other,
+            self.y / other,
+            self.z / other,
+            self.w / other,
         );
     }
 }
@@ -533,12 +649,7 @@ impl Vector4 {
     /// ```
     #[inline]
     pub fn sqrt(&self) -> Vector4 {
-        Vector4::new(
-            self.x.sqrt(),
-            self.y.sqrt(),
-            self.z.sqrt(),
-            self.w.sqrt(),
-        )
+        Vector4::new(self.x.sqrt(), self.y.sqrt(), self.z.sqrt(), self.w.sqrt())
     }
 
     /// Computes the magnitude (length) of the vector.
@@ -1213,7 +1324,10 @@ mod tests {
             let b = Vector4::new(6.0, 7.0, 8.0, 9.0);
             assert_eq!(a / b, Vector4::new(2.0, 3.0, 4.0, 5.0));
             assert_eq!(a / 2.0, Vector4::new(6.0, 10.5, 16.0, 22.5));
-            assert_eq!(60.0 / a, Vector4::new(5.0, 60.0/21.0, 60.0/32.0, 60.0/45.0));
+            assert_eq!(
+                60.0 / a,
+                Vector4::new(5.0, 60.0 / 21.0, 60.0 / 32.0, 60.0 / 45.0)
+            );
         }
 
         #[test]
@@ -1380,6 +1494,31 @@ mod tests {
         fn test_vector4_default() {
             let v: Vector4 = Default::default();
             assert_eq!(v, Vector4::ZERO);
+        }
+
+        #[test]
+        fn test_vector4_indexing() {
+            let mut v = Vector4::new(1.0, 2.0, 3.0, 4.0);
+
+            // Read access
+            assert_eq!(v[0], 1.0);
+            assert_eq!(v[1], 2.0);
+            assert_eq!(v[2], 3.0);
+            assert_eq!(v[3], 4.0);
+
+            // Write access
+            v[0] = 5.0;
+            v[1] = 6.0;
+            v[2] = 7.0;
+            v[3] = 8.0;
+            assert_eq!(v, Vector4::new(5.0, 6.0, 7.0, 8.0));
+        }
+
+        #[test]
+        #[should_panic(expected = "Vector4 index 4 out of bounds")]
+        fn test_vector4_index_out_of_bounds() {
+            let v = Vector4::new(1.0, 2.0, 3.0, 4.0);
+            let _ = v[4];
         }
     }
 }
