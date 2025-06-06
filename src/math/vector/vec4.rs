@@ -5,7 +5,7 @@
 //! physics, and game development. Vector4 is commonly used for homogeneous
 //! coordinates, RGBA colors, quaternions, and other 4D mathematical operations.
 
-use crate::math::{Vector, Vector2};
+use crate::math::{Vec, Vec2};
 use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 
 /// A 4D vector with `x`, `y`, `z`, and `w` components.
@@ -18,13 +18,13 @@ use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, 
 /// # Examples
 ///
 /// ```rust
-/// use crate::forge_engine::math::Vector4;
-/// use crate::forge_engine::Vector;
+/// use crate::forge_engine::math::Vec4;
+/// use crate::forge_engine::Vec;
 ///
 /// // Create vectors
-/// let v1 = Vector4::new(1.0, 2.0, 3.0, 4.0);
-/// let v2 = Vector4::from((5.0, 6.0, 7.0, 8.0));
-/// let v3 = Vector4::from_vec3(Vector::new(1.0, 2.0, 3.0), 1.0);
+/// let v1 = Vec4::new(1.0, 2.0, 3.0, 4.0);
+/// let v2 = Vec4::from((5.0, 6.0, 7.0, 8.0));
+/// let v3 = Vec4::from_vec3(Vec::new(1.0, 2.0, 3.0), 1.0);
 ///
 /// // Basic arithmetic
 /// let sum = v1 + v2;
@@ -36,11 +36,11 @@ use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, 
 /// let normalized = v1.normalized();
 ///
 /// // Homogeneous coordinate operations
-/// let point = Vector4::from_vec3(Vector::new(10.0, 20.0, 30.0), 1.0);
-/// let direction = Vector4::from_vec3(Vector::new(1.0, 0.0, 0.0), 0.0);
+/// let point = Vec4::from_vec3(Vec::new(10.0, 20.0, 30.0), 1.0);
+/// let direction = Vec4::from_vec3(Vec::new(1.0, 0.0, 0.0), 0.0);
 /// ```
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub struct Vector4 {
+pub struct Vec4 {
     /// The x-component of the vector
     pub x: f32,
     /// The y-component of the vector
@@ -52,7 +52,7 @@ pub struct Vector4 {
 }
 
 // Constructor
-impl Vector4 {
+impl Vec4 {
     /// Creates a new `Vector4` with the specified components.
     ///
     /// # Arguments
@@ -65,16 +65,16 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let v = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
     /// assert_eq!(v.x, 1.0);
     /// assert_eq!(v.y, 2.0);
     /// assert_eq!(v.z, 3.0);
     /// assert_eq!(v.w, 4.0);
     /// ```
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
-        Vector4 { x, y, z, w }
+        Vec4 { x, y, z, w }
     }
 
     /// Creates a `Vector4` from a 3D vector and a w-component.
@@ -90,14 +90,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
-    /// use crate::forge_engine::Vector;
+    /// use crate::forge_engine::math::Vec4;
+    /// use crate::forge_engine::Vec;
     ///
-    /// let point = Vector4::from_vec3(Vector::new(1.0, 2.0, 3.0), 1.0);
-    /// let direction = Vector4::from_vec3(Vector::new(0.0, 1.0, 0.0), 0.0);
+    /// let point = Vec4::from_vec3(Vec::new(1.0, 2.0, 3.0), 1.0);
+    /// let direction = Vec4::from_vec3(Vec::new(0.0, 1.0, 0.0), 0.0);
     /// ```
-    pub fn from_vec3(v: Vector, w: f32) -> Self {
-        Vector4 {
+    pub fn from_vec3(v: Vec, w: f32) -> Self {
+        Vec4 {
             x: v.x,
             y: v.y,
             z: v.z,
@@ -107,9 +107,9 @@ impl Vector4 {
 }
 
 // Constant constructors
-impl Vector4 {
+impl Vec4 {
     /// A vector with all components set to zero: `(0, 0, 0, 0)`
-    pub const ZERO: Vector4 = Vector4 {
+    pub const ZERO: Vec4 = Vec4 {
         x: 0.0,
         y: 0.0,
         z: 0.0,
@@ -117,7 +117,7 @@ impl Vector4 {
     };
 
     /// A vector with all components set to one: `(1, 1, 1, 1)`
-    pub const ONE: Vector4 = Vector4 {
+    pub const ONE: Vec4 = Vec4 {
         x: 1.0,
         y: 1.0,
         z: 1.0,
@@ -125,7 +125,7 @@ impl Vector4 {
     };
 
     /// A unit vector in the x direction: `(1, 0, 0, 0)`
-    pub const X: Vector4 = Vector4 {
+    pub const X: Vec4 = Vec4 {
         x: 1.0,
         y: 0.0,
         z: 0.0,
@@ -133,7 +133,7 @@ impl Vector4 {
     };
 
     /// A unit vector in the y direction: `(0, 1, 0, 0)`
-    pub const Y: Vector4 = Vector4 {
+    pub const Y: Vec4 = Vec4 {
         x: 0.0,
         y: 1.0,
         z: 0.0,
@@ -141,7 +141,7 @@ impl Vector4 {
     };
 
     /// A unit vector in the z direction: `(0, 0, 1, 0)`
-    pub const Z: Vector4 = Vector4 {
+    pub const Z: Vec4 = Vec4 {
         x: 0.0,
         y: 0.0,
         z: 1.0,
@@ -149,7 +149,7 @@ impl Vector4 {
     };
 
     /// A unit vector in the w direction: `(0, 0, 0, 1)`
-    pub const W: Vector4 = Vector4 {
+    pub const W: Vec4 = Vec4 {
         x: 0.0,
         y: 0.0,
         z: 0.0,
@@ -162,14 +162,14 @@ impl Vector4 {
 /// # Examples
 ///
 /// ```rust
-/// use crate::forge_engine::math::Vector4;
+/// use crate::forge_engine::math::Vec4;
 ///
-/// let v: Vector4 = (1.0, 2.0, 3.0, 4.0).into();
-/// assert_eq!(v, Vector4::new(1.0, 2.0, 3.0, 4.0));
+/// let v: Vec4 = (1.0, 2.0, 3.0, 4.0).into();
+/// assert_eq!(v, Vec4::new(1.0, 2.0, 3.0, 4.0));
 /// ```
-impl From<(f32, f32, f32, f32)> for Vector4 {
+impl From<(f32, f32, f32, f32)> for Vec4 {
     fn from(t: (f32, f32, f32, f32)) -> Self {
-        Vector4::new(t.0, t.1, t.2, t.3)
+        Vec4::new(t.0, t.1, t.2, t.3)
     }
 }
 
@@ -180,16 +180,16 @@ impl From<(f32, f32, f32, f32)> for Vector4 {
 /// # Examples
 ///
 /// ```rust
-/// use crate::forge_engine::math::Vector4;
-/// use crate::forge_engine::Vector;
+/// use crate::forge_engine::math::Vec4;
+/// use crate::forge_engine::Vec;
 ///
-/// let v3 = Vector::new(1.0, 2.0, 3.0);
-/// let v4: Vector4 = v3.into();
-/// assert_eq!(v4, Vector4::new(1.0, 2.0, 3.0, 1.0));
+/// let v3 = Vec::new(1.0, 2.0, 3.0);
+/// let v4: Vec4 = v3.into();
+/// assert_eq!(v4, Vec4::new(1.0, 2.0, 3.0, 1.0));
 /// ```
-impl From<Vector> for Vector4 {
-    fn from(v: Vector) -> Self {
-        Vector4::new(v.x, v.y, v.z, 1.0)
+impl From<Vec> for Vec4 {
+    fn from(v: Vec) -> Self {
+        Vec4::new(v.x, v.y, v.z, 1.0)
     }
 }
 
@@ -198,15 +198,15 @@ impl From<Vector> for Vector4 {
 /// # Examples
 ///
 /// ```rust
-/// use crate::forge_engine::math::{Vector2, Vector4};
+/// use crate::forge_engine::math::{Vec2, Vec4};
 ///
-/// let v2 = Vector2::new(1.0, 2.0);
-/// let v4: Vector4 = v2.into();
-/// assert_eq!(v4, Vector4::new(1.0, 2.0, 0.0, 1.0));
+/// let v2 = Vec2::new(1.0, 2.0);
+/// let v4: Vec4 = v2.into();
+/// assert_eq!(v4, Vec4::new(1.0, 2.0, 0.0, 1.0));
 /// ```
-impl From<Vector2> for Vector4 {
-    fn from(v: Vector2) -> Self {
-        Vector4::new(v.x, v.y, 0.0, 1.0)
+impl From<Vec2> for Vec4 {
+    fn from(v: Vec2) -> Self {
+        Vec4::new(v.x, v.y, 0.0, 1.0)
     }
 }
 
@@ -215,14 +215,14 @@ impl From<Vector2> for Vector4 {
 /// # Examples
 ///
 /// ```rust
-/// use crate::forge_engine::math::Vector4;
+/// use crate::forge_engine::math::Vec4;
 ///
-/// let v: Vector4 = [1.0, 2.0, 3.0, 4.0].into();
-/// assert_eq!(v, Vector4::new(1.0, 2.0, 3.0, 4.0));
+/// let v: Vec4 = [1.0, 2.0, 3.0, 4.0].into();
+/// assert_eq!(v, Vec4::new(1.0, 2.0, 3.0, 4.0));
 /// ```
-impl From<[f32; 4]> for Vector4 {
+impl From<[f32; 4]> for Vec4 {
     fn from(arr: [f32; 4]) -> Self {
-        Vector4::new(arr[0], arr[1], arr[2], arr[3])
+        Vec4::new(arr[0], arr[1], arr[2], arr[3])
     }
 }
 
@@ -231,27 +231,27 @@ impl From<[f32; 4]> for Vector4 {
 /// # Examples
 ///
 /// ```rust
-/// use crate::forge_engine::math::Vector4;
+/// use crate::forge_engine::math::Vec4;
 ///
-/// let v: Vector4 = 3.0.into();
-/// assert_eq!(v, Vector4::new(3.0, 3.0, 3.0, 3.0));
+/// let v: Vec4 = 3.0.into();
+/// assert_eq!(v, Vec4::new(3.0, 3.0, 3.0, 3.0));
 /// ```
-impl From<f32> for Vector4  {
+impl From<f32> for Vec4 {
     fn from(value: f32) -> Self {
-        Vector4::new(value, value, value, value)
+        Vec4::new(value, value, value, value)
     }
 }
 
 /// Converts a `Vector4` into a tuple `(f32, f32, f32, f32)`.
-impl From<Vector4> for (f32, f32, f32, f32) {
-    fn from(v: Vector4) -> Self {
+impl From<Vec4> for (f32, f32, f32, f32) {
+    fn from(v: Vec4) -> Self {
         (v.x, v.y, v.z, v.w)
     }
 }
 
 /// Converts a `Vector4` into an array `[f32; 4]`.
-impl From<Vector4> for [f32; 4] {
-    fn from(v: Vector4) -> Self {
+impl From<Vec4> for [f32; 4] {
+    fn from(v: Vec4) -> Self {
         [v.x, v.y, v.z, v.w]
     }
 }
@@ -260,19 +260,19 @@ impl From<Vector4> for [f32; 4] {
 ///
 /// If `w` is not zero, the x, y, and z components are divided by `w`.
 /// If `w` is zero, returns the x, y, and z components directly.
-impl From<Vector4> for Vector {
-    fn from(v: Vector4) -> Self {
+impl From<Vec4> for Vec {
+    fn from(v: Vec4) -> Self {
         if v.w != 0.0 {
-            Vector::new(v.x / v.w, v.y / v.w, v.z / v.w)
+            Vec::new(v.x / v.w, v.y / v.w, v.z / v.w)
         } else {
-            Vector::new(v.x, v.y, v.z)
+            Vec::new(v.x, v.y, v.z)
         }
     }
 }
 
 // Operators
 
-impl Index<usize> for Vector4 {
+impl Index<usize> for Vec4 {
     type Output = f32;
 
     /// Access vector components by index.
@@ -289,9 +289,9 @@ impl Index<usize> for Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let v = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
     /// assert_eq!(v[0], 1.0);  // x component
     /// assert_eq!(v[1], 2.0);  // y component
     /// assert_eq!(v[2], 3.0);  // z component
@@ -308,7 +308,7 @@ impl Index<usize> for Vector4 {
     }
 }
 
-impl IndexMut<usize> for Vector4 {
+impl IndexMut<usize> for Vec4 {
     /// Mutably access vector components by index.
     ///
     /// # Indexing
@@ -323,14 +323,14 @@ impl IndexMut<usize> for Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let mut v = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// let mut v = Vec4::new(1.0, 2.0, 3.0, 4.0);
     /// v[0] = 5.0;  // Set x component
     /// v[1] = 6.0;  // Set y component
     /// v[2] = 7.0;  // Set z component
     /// v[3] = 8.0;  // Set w component
-    /// assert_eq!(v, Vector4::new(5.0, 6.0, 7.0, 8.0));
+    /// assert_eq!(v, Vec4::new(5.0, 6.0, 7.0, 8.0));
     /// ```
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         match index {
@@ -344,10 +344,10 @@ impl IndexMut<usize> for Vector4 {
 }
 
 /// Adds two vectors component-wise.
-impl Add for Vector4 {
-    type Output = Vector4;
-    fn add(self, other: Vector4) -> Vector4 {
-        Vector4::new(
+impl Add for Vec4 {
+    type Output = Vec4;
+    fn add(self, other: Vec4) -> Vec4 {
+        Vec4::new(
             self.x + other.x,
             self.y + other.y,
             self.z + other.z,
@@ -357,10 +357,10 @@ impl Add for Vector4 {
 }
 
 /// Adds a scalar to each component of the vector.
-impl Add<f32> for Vector4 {
-    type Output = Vector4;
-    fn add(self, other: f32) -> Vector4 {
-        Vector4::new(
+impl Add<f32> for Vec4 {
+    type Output = Vec4;
+    fn add(self, other: f32) -> Vec4 {
+        Vec4::new(
             self.x + other,
             self.y + other,
             self.z + other,
@@ -370,10 +370,10 @@ impl Add<f32> for Vector4 {
 }
 
 /// Adds a vector to a scalar (commutative addition).
-impl Add<Vector4> for f32 {
-    type Output = Vector4;
-    fn add(self, other: Vector4) -> Vector4 {
-        Vector4::new(
+impl Add<Vec4> for f32 {
+    type Output = Vec4;
+    fn add(self, other: Vec4) -> Vec4 {
+        Vec4::new(
             self + other.x,
             self + other.y,
             self + other.z,
@@ -383,9 +383,9 @@ impl Add<Vector4> for f32 {
 }
 
 /// Adds another vector to this vector in place.
-impl AddAssign for Vector4 {
-    fn add_assign(&mut self, other: Vector4) {
-        *self = Vector4::new(
+impl AddAssign for Vec4 {
+    fn add_assign(&mut self, other: Vec4) {
+        *self = Vec4::new(
             self.x + other.x,
             self.y + other.y,
             self.z + other.z,
@@ -395,10 +395,10 @@ impl AddAssign for Vector4 {
 }
 
 /// Subtracts two vectors component-wise.
-impl Sub for Vector4 {
-    type Output = Vector4;
-    fn sub(self, other: Vector4) -> Vector4 {
-        Vector4::new(
+impl Sub for Vec4 {
+    type Output = Vec4;
+    fn sub(self, other: Vec4) -> Vec4 {
+        Vec4::new(
             self.x - other.x,
             self.y - other.y,
             self.z - other.z,
@@ -408,10 +408,10 @@ impl Sub for Vector4 {
 }
 
 /// Subtracts a scalar from each component of the vector.
-impl Sub<f32> for Vector4 {
-    type Output = Vector4;
-    fn sub(self, other: f32) -> Vector4 {
-        Vector4::new(
+impl Sub<f32> for Vec4 {
+    type Output = Vec4;
+    fn sub(self, other: f32) -> Vec4 {
+        Vec4::new(
             self.x - other,
             self.y - other,
             self.z - other,
@@ -421,10 +421,10 @@ impl Sub<f32> for Vector4 {
 }
 
 /// Subtracts a vector from a scalar.
-impl Sub<Vector4> for f32 {
-    type Output = Vector4;
-    fn sub(self, other: Vector4) -> Vector4 {
-        Vector4::new(
+impl Sub<Vec4> for f32 {
+    type Output = Vec4;
+    fn sub(self, other: Vec4) -> Vec4 {
+        Vec4::new(
             self - other.x,
             self - other.y,
             self - other.z,
@@ -434,9 +434,9 @@ impl Sub<Vector4> for f32 {
 }
 
 /// Subtracts another vector from this vector in place.
-impl SubAssign for Vector4 {
-    fn sub_assign(&mut self, other: Vector4) {
-        *self = Vector4::new(
+impl SubAssign for Vec4 {
+    fn sub_assign(&mut self, other: Vec4) {
+        *self = Vec4::new(
             self.x - other.x,
             self.y - other.y,
             self.z - other.z,
@@ -446,10 +446,10 @@ impl SubAssign for Vector4 {
 }
 
 /// Multiplies two vectors component-wise (Hadamard product).
-impl Mul<Vector4> for Vector4 {
-    type Output = Vector4;
-    fn mul(self, other: Vector4) -> Vector4 {
-        Vector4::new(
+impl Mul<Vec4> for Vec4 {
+    type Output = Vec4;
+    fn mul(self, other: Vec4) -> Vec4 {
+        Vec4::new(
             self.x * other.x,
             self.y * other.y,
             self.z * other.z,
@@ -459,10 +459,10 @@ impl Mul<Vector4> for Vector4 {
 }
 
 /// Multiplies the vector by a scalar.
-impl Mul<f32> for Vector4 {
-    type Output = Vector4;
-    fn mul(self, other: f32) -> Vector4 {
-        Vector4::new(
+impl Mul<f32> for Vec4 {
+    type Output = Vec4;
+    fn mul(self, other: f32) -> Vec4 {
+        Vec4::new(
             self.x * other,
             self.y * other,
             self.z * other,
@@ -472,10 +472,10 @@ impl Mul<f32> for Vector4 {
 }
 
 /// Multiplies a scalar by a vector (commutative multiplication).
-impl Mul<Vector4> for f32 {
-    type Output = Vector4;
-    fn mul(self, other: Vector4) -> Vector4 {
-        Vector4::new(
+impl Mul<Vec4> for f32 {
+    type Output = Vec4;
+    fn mul(self, other: Vec4) -> Vec4 {
+        Vec4::new(
             self * other.x,
             self * other.y,
             self * other.z,
@@ -485,9 +485,9 @@ impl Mul<Vector4> for f32 {
 }
 
 /// Multiplies this vector by another vector in place (component-wise).
-impl MulAssign<Vector4> for Vector4 {
-    fn mul_assign(&mut self, other: Vector4) {
-        *self = Vector4::new(
+impl MulAssign<Vec4> for Vec4 {
+    fn mul_assign(&mut self, other: Vec4) {
+        *self = Vec4::new(
             self.x * other.x,
             self.y * other.y,
             self.z * other.z,
@@ -497,9 +497,9 @@ impl MulAssign<Vector4> for Vector4 {
 }
 
 /// Divides this vector by another vector component-wise.
-impl MulAssign<f32> for Vector4 {
+impl MulAssign<f32> for Vec4 {
     fn mul_assign(&mut self, other: f32) {
-        *self = Vector4::new(
+        *self = Vec4::new(
             self.x * other,
             self.y * other,
             self.z * other,
@@ -509,10 +509,10 @@ impl MulAssign<f32> for Vector4 {
 }
 
 /// Divides two vectors component-wise.
-impl Div<Vector4> for Vector4 {
-    type Output = Vector4;
-    fn div(self, other: Vector4) -> Vector4 {
-        Vector4::new(
+impl Div<Vec4> for Vec4 {
+    type Output = Vec4;
+    fn div(self, other: Vec4) -> Vec4 {
+        Vec4::new(
             self.x / other.x,
             self.y / other.y,
             self.z / other.z,
@@ -522,10 +522,10 @@ impl Div<Vector4> for Vector4 {
 }
 
 /// Divides the vector by a scalar.
-impl Div<f32> for Vector4 {
-    type Output = Vector4;
-    fn div(self, other: f32) -> Vector4 {
-        Vector4::new(
+impl Div<f32> for Vec4 {
+    type Output = Vec4;
+    fn div(self, other: f32) -> Vec4 {
+        Vec4::new(
             self.x / other,
             self.y / other,
             self.z / other,
@@ -535,10 +535,10 @@ impl Div<f32> for Vector4 {
 }
 
 /// Divides a scalar by a vector component-wise.
-impl Div<Vector4> for f32 {
-    type Output = Vector4;
-    fn div(self, other: Vector4) -> Vector4 {
-        Vector4::new(
+impl Div<Vec4> for f32 {
+    type Output = Vec4;
+    fn div(self, other: Vec4) -> Vec4 {
+        Vec4::new(
             self / other.x,
             self / other.y,
             self / other.z,
@@ -548,9 +548,9 @@ impl Div<Vector4> for f32 {
 }
 
 /// Divides this vector by another vector in place (component-wise).
-impl DivAssign<Vector4> for Vector4 {
-    fn div_assign(&mut self, other: Vector4) {
-        *self = Vector4::new(
+impl DivAssign<Vec4> for Vec4 {
+    fn div_assign(&mut self, other: Vec4) {
+        *self = Vec4::new(
             self.x / other.x,
             self.y / other.y,
             self.z / other.z,
@@ -560,9 +560,9 @@ impl DivAssign<Vector4> for Vector4 {
 }
 
 /// Divides this vector by a scalar in place.
-impl DivAssign<f32> for Vector4 {
+impl DivAssign<f32> for Vec4 {
     fn div_assign(&mut self, other: f32) {
-        *self = Vector4::new(
+        *self = Vec4::new(
             self.x / other,
             self.y / other,
             self.z / other,
@@ -572,22 +572,22 @@ impl DivAssign<f32> for Vector4 {
 }
 
 /// Negates the vector (multiplies each component by -1).
-impl Neg for Vector4 {
-    type Output = Vector4;
-    fn neg(self) -> Vector4 {
-        Vector4::new(-self.x, -self.y, -self.z, -self.w)
+impl Neg for Vec4 {
+    type Output = Vec4;
+    fn neg(self) -> Vec4 {
+        Vec4::new(-self.x, -self.y, -self.z, -self.w)
     }
 }
 
 /// Creates a zero vector by default.
-impl Default for Vector4 {
+impl Default for Vec4 {
     fn default() -> Self {
         Self::ZERO
     }
 }
 
 // Other Methods
-impl Vector4 {
+impl Vec4 {
     /// Computes the dot product of two vectors.
     ///
     /// The dot product is a scalar value equal to the sum of the products
@@ -600,14 +600,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let a = Vector4::new(1.0, 2.0, 3.0, 4.0);
-    /// let b = Vector4::new(5.0, 6.0, 7.0, 8.0);
+    /// let a = Vec4::new(1.0, 2.0, 3.0, 4.0);
+    /// let b = Vec4::new(5.0, 6.0, 7.0, 8.0);
     /// assert_eq!(a.dot(b), 70.0); // 1*5 + 2*6 + 3*7 + 4*8
     /// ```
     #[inline]
-    pub fn dot(self, other: Vector4) -> f32 {
+    pub fn dot(self, other: Vec4) -> f32 {
         self.x * other.x + self.y * other.y + self.z * other.z + self.w * other.w
     }
 
@@ -620,15 +620,15 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let v = Vector4::new(2.0, 3.0, 4.0, 5.0);
+    /// let v = Vec4::new(2.0, 3.0, 4.0, 5.0);
     /// let squared = v.pow(2.0);
-    /// assert_eq!(squared, Vector4::new(4.0, 9.0, 16.0, 25.0));
+    /// assert_eq!(squared, Vec4::new(4.0, 9.0, 16.0, 25.0));
     /// ```
     #[inline]
-    pub fn pow(self, exp: f32) -> Vector4 {
-        Vector4::new(
+    pub fn pow(self, exp: f32) -> Vec4 {
+        Vec4::new(
             self.x.powf(exp),
             self.y.powf(exp),
             self.z.powf(exp),
@@ -641,15 +641,15 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let v = Vector4::new(4.0, 9.0, 16.0, 25.0);
+    /// let v = Vec4::new(4.0, 9.0, 16.0, 25.0);
     /// let roots = v.sqrt();
-    /// assert_eq!(roots, Vector4::new(2.0, 3.0, 4.0, 5.0));
+    /// assert_eq!(roots, Vec4::new(2.0, 3.0, 4.0, 5.0));
     /// ```
     #[inline]
-    pub fn sqrt(&self) -> Vector4 {
-        Vector4::new(self.x.sqrt(), self.y.sqrt(), self.z.sqrt(), self.w.sqrt())
+    pub fn sqrt(&self) -> Vec4 {
+        Vec4::new(self.x.sqrt(), self.y.sqrt(), self.z.sqrt(), self.w.sqrt())
     }
 
     /// Computes the magnitude (length) of the vector.
@@ -660,9 +660,9 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let v = Vector4::new(1.0, 2.0, 2.0, 4.0);
+    /// let v = Vec4::new(1.0, 2.0, 2.0, 4.0);
     /// assert_eq!(v.magnitude(), 5.0);
     /// ```
     #[inline]
@@ -678,9 +678,9 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let v = Vector4::new(1.0, 2.0, 2.0, 4.0);
+    /// let v = Vec4::new(1.0, 2.0, 2.0, 4.0);
     /// assert_eq!(v.magnitude_squared(), 25.0);
     /// ```
     #[inline]
@@ -695,18 +695,18 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let v = Vector4::new(0.0, 3.0, 0.0, 4.0);
+    /// let v = Vec4::new(0.0, 3.0, 0.0, 4.0);
     /// let normalized = v.normalized();
-    /// assert_eq!(normalized, Vector4::new(0.0, 0.6, 0.0, 0.8));
+    /// assert_eq!(normalized, Vec4::new(0.0, 0.6, 0.0, 0.8));
     /// assert!((normalized.magnitude() - 1.0).abs() < f32::EPSILON);
     /// ```
     #[inline]
-    pub fn normalized(self) -> Vector4 {
+    pub fn normalized(self) -> Vec4 {
         let magnitude = self.magnitude();
         if magnitude == 0.0 {
-            Vector4::ZERO
+            Vec4::ZERO
         } else {
             self / magnitude
         }
@@ -719,10 +719,10 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// assert!(Vector4::ZERO.is_zero());
-    /// assert!(!Vector4::ONE.is_zero());
+    /// assert!(Vec4::ZERO.is_zero());
+    /// assert!(!Vec4::ONE.is_zero());
     /// ```
     #[inline]
     pub fn is_zero(self) -> bool {
@@ -736,10 +736,10 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// assert!(Vector4::X.is_normalised());
-    /// assert!(!Vector4::new(1.0, 2.0, 2.0, 4.0).is_normalised());
+    /// assert!(Vec4::X.is_normalised());
+    /// assert!(!Vec4::new(1.0, 2.0, 2.0, 4.0).is_normalised());
     /// ```
     #[inline]
     pub fn is_normalised(self) -> bool {
@@ -753,13 +753,13 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let v = Vector4::new(3.0, 4.0, 0.0, 0.0);
+    /// let v = Vec4::new(3.0, 4.0, 0.0, 0.0);
     /// assert!(v.safe_normal().is_some());
-    /// assert!(Vector4::ZERO.safe_normal().is_none());
+    /// assert!(Vec4::ZERO.safe_normal().is_none());
     /// ```
-    pub fn safe_normal(self) -> Option<Vector4> {
+    pub fn safe_normal(self) -> Option<Vec4> {
         if self.is_zero() {
             None
         } else {
@@ -777,14 +777,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let a = Vector4::new(0.0, 0.0, 0.0, 0.0);
-    /// let b = Vector4::new(10.0, 20.0, 30.0, 40.0);
+    /// let a = Vec4::new(0.0, 0.0, 0.0, 0.0);
+    /// let b = Vec4::new(10.0, 20.0, 30.0, 40.0);
     /// let mid = a.lerp(b, 0.5);
-    /// assert_eq!(mid, Vector4::new(5.0, 10.0, 15.0, 20.0));
+    /// assert_eq!(mid, Vec4::new(5.0, 10.0, 15.0, 20.0));
     /// ```
-    pub fn lerp(self, other: Vector4, t: f32) -> Vector4 {
+    pub fn lerp(self, other: Vec4, t: f32) -> Vec4 {
         self + (other - self) * t
     }
 
@@ -797,14 +797,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let a = Vector4::new(1.0, 2.0, 3.0, 4.0);
-    /// let b = Vector4::new(5.0, 6.0, 7.0, 8.0);
+    /// let a = Vec4::new(1.0, 2.0, 3.0, 4.0);
+    /// let b = Vec4::new(5.0, 6.0, 7.0, 8.0);
     /// let dist = a.distance(b);
     /// assert_eq!(dist, 8.0);
     /// ```
-    pub fn distance(self, other: Vector4) -> f32 {
+    pub fn distance(self, other: Vec4) -> f32 {
         (other - self).magnitude()
     }
 
@@ -815,7 +815,7 @@ impl Vector4 {
     /// # Arguments
     ///
     /// * `other` - The other point
-    pub fn distance_squared(self, other: Vector4) -> f32 {
+    pub fn distance_squared(self, other: Vec4) -> f32 {
         let diff = self - other;
         diff.dot(diff)
     }
@@ -825,13 +825,13 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let v = Vector4::new(-1.0, 2.0, -3.0, 4.0);
-    /// assert_eq!(v.abs(), Vector4::new(1.0, 2.0, 3.0, 4.0));
+    /// let v = Vec4::new(-1.0, 2.0, -3.0, 4.0);
+    /// assert_eq!(v.abs(), Vec4::new(1.0, 2.0, 3.0, 4.0));
     /// ```
-    pub fn abs(self) -> Vector4 {
-        Vector4::new(self.x.abs(), self.y.abs(), self.z.abs(), self.w.abs())
+    pub fn abs(self) -> Vec4 {
+        Vec4::new(self.x.abs(), self.y.abs(), self.z.abs(), self.w.abs())
     }
 
     /// Returns a vector with the minimum component values from two vectors.
@@ -843,14 +843,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let a = Vector4::new(1.0, 5.0, 3.0, 7.0);
-    /// let b = Vector4::new(4.0, 2.0, 6.0, 1.0);
-    /// assert_eq!(a.min(b), Vector4::new(1.0, 2.0, 3.0, 1.0));
+    /// let a = Vec4::new(1.0, 5.0, 3.0, 7.0);
+    /// let b = Vec4::new(4.0, 2.0, 6.0, 1.0);
+    /// assert_eq!(a.min(b), Vec4::new(1.0, 2.0, 3.0, 1.0));
     /// ```
-    pub fn min(self, other: Vector4) -> Vector4 {
-        Vector4::new(
+    pub fn min(self, other: Vec4) -> Vec4 {
+        Vec4::new(
             self.x.min(other.x),
             self.y.min(other.y),
             self.z.min(other.z),
@@ -867,14 +867,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let a = Vector4::new(1.0, 5.0, 3.0, 7.0);
-    /// let b = Vector4::new(4.0, 2.0, 6.0, 1.0);
-    /// assert_eq!(a.max(b), Vector4::new(4.0, 5.0, 6.0, 7.0));
+    /// let a = Vec4::new(1.0, 5.0, 3.0, 7.0);
+    /// let b = Vec4::new(4.0, 2.0, 6.0, 1.0);
+    /// assert_eq!(a.max(b), Vec4::new(4.0, 5.0, 6.0, 7.0));
     /// ```
-    pub fn max(self, other: Vector4) -> Vector4 {
-        Vector4::new(
+    pub fn max(self, other: Vec4) -> Vec4 {
+        Vec4::new(
             self.x.max(other.x),
             self.y.max(other.y),
             self.z.max(other.z),
@@ -892,14 +892,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let v = Vector4::new(-1.0, 5.0, 2.0, 8.0);
-    /// let min = Vector4::new(0.0, 0.0, 0.0, 0.0);
-    /// let max = Vector4::new(3.0, 3.0, 3.0, 3.0);
-    /// assert_eq!(v.clamp(min, max), Vector4::new(0.0, 3.0, 2.0, 3.0));
+    /// let v = Vec4::new(-1.0, 5.0, 2.0, 8.0);
+    /// let min = Vec4::new(0.0, 0.0, 0.0, 0.0);
+    /// let max = Vec4::new(3.0, 3.0, 3.0, 3.0);
+    /// assert_eq!(v.clamp(min, max), Vec4::new(0.0, 3.0, 2.0, 3.0));
     /// ```
-    pub fn clamp(self, min: Vector4, max: Vector4) -> Vector4 {
+    pub fn clamp(self, min: Vec4, max: Vec4) -> Vec4 {
         self.max(min).min(max)
     }
 
@@ -914,19 +914,19 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let v = Vector4::new(3.0, 4.0, 5.0, 6.0);
-    /// let onto = Vector4::new(1.0, 0.0, 0.0, 0.0);
+    /// let v = Vec4::new(3.0, 4.0, 5.0, 6.0);
+    /// let onto = Vec4::new(1.0, 0.0, 0.0, 0.0);
     /// let proj = v.project_onto(onto);
-    /// assert_eq!(proj, Vector4::new(3.0, 0.0, 0.0, 0.0));
+    /// assert_eq!(proj, Vec4::new(3.0, 0.0, 0.0, 0.0));
     /// ```
-    pub fn project_onto(self, onto: Vector4) -> Vector4 {
+    pub fn project_onto(self, onto: Vec4) -> Vec4 {
         let d = onto.dot(onto);
         if d > 0.0 {
             onto * (self.dot(onto) / d)
         } else {
-            Vector4::ZERO
+            Vec4::ZERO
         }
     }
 
@@ -941,14 +941,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let v = Vector4::new(3.0, 4.0, 5.0, 6.0);
-    /// let from = Vector4::new(1.0, 0.0, 0.0, 0.0);
+    /// let v = Vec4::new(3.0, 4.0, 5.0, 6.0);
+    /// let from = Vec4::new(1.0, 0.0, 0.0, 0.0);
     /// let rej = v.reject_from(from);
-    /// assert_eq!(rej, Vector4::new(0.0, 4.0, 5.0, 6.0));
+    /// assert_eq!(rej, Vec4::new(0.0, 4.0, 5.0, 6.0));
     /// ```
-    pub fn reject_from(self, from: Vector4) -> Vector4 {
+    pub fn reject_from(self, from: Vec4) -> Vec4 {
         self - self.project_onto(from)
     }
 
@@ -963,20 +963,20 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
+    /// use crate::forge_engine::math::Vec4;
     ///
-    /// let v = Vector4::new(1.0, -1.0, 0.0, 0.0);
-    /// let normal = Vector4::new(0.0, 1.0, 0.0, 0.0);
+    /// let v = Vec4::new(1.0, -1.0, 0.0, 0.0);
+    /// let normal = Vec4::new(0.0, 1.0, 0.0, 0.0);
     /// let reflected = v.reflect(normal);
-    /// assert_eq!(reflected, Vector4::new(1.0, 1.0, 0.0, 0.0));
+    /// assert_eq!(reflected, Vec4::new(1.0, 1.0, 0.0, 0.0));
     /// ```
-    pub fn reflect(self, normal: Vector4) -> Vector4 {
+    pub fn reflect(self, normal: Vec4) -> Vec4 {
         self - normal * (2.0 * self.dot(normal))
     }
 }
 
 // Swizzling and Conversions
-impl Vector4 {
+impl Vec4 {
     /// Returns the xyz components as a `Vector`, discarding the w component.
     ///
     /// This is useful when you need to extract 3D coordinates from homogeneous coordinates
@@ -985,16 +985,16 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
-    /// use crate::forge_engine::Vector;
+    /// use crate::forge_engine::math::Vec4;
+    /// use crate::forge_engine::Vec;
     ///
-    /// let v4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// let v4 = Vec4::new(1.0, 2.0, 3.0, 4.0);
     /// let v3 = v4.xyz();
-    /// assert_eq!(v3, Vector::new(1.0, 2.0, 3.0));
+    /// assert_eq!(v3, Vec::new(1.0, 2.0, 3.0));
     /// ```
     #[inline]
-    pub fn xyz(self) -> Vector {
-        Vector::new(self.x, self.y, self.z)
+    pub fn xyz(self) -> Vec {
+        Vec::new(self.x, self.y, self.z)
     }
 
     /// Converts to a `Vector` using perspective division if w != 0.
@@ -1006,25 +1006,25 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::Vector4;
-    /// use crate::forge_engine::Vector;
+    /// use crate::forge_engine::math::Vec4;
+    /// use crate::forge_engine::Vec;
     ///
     /// // Point in homogeneous coordinates
-    /// let point = Vector4::new(2.0, 4.0, 6.0, 2.0);
+    /// let point = Vec4::new(2.0, 4.0, 6.0, 2.0);
     /// let v3 = point.vec3();
-    /// assert_eq!(v3, Vector::new(1.0, 2.0, 3.0));
+    /// assert_eq!(v3, Vec::new(1.0, 2.0, 3.0));
     ///
     /// // Direction vector (w = 0)
-    /// let direction = Vector4::new(2.0, 4.0, 6.0, 0.0);
+    /// let direction = Vec4::new(2.0, 4.0, 6.0, 0.0);
     /// let v3 = direction.vec3();
-    /// assert_eq!(v3, Vector::new(2.0, 4.0, 6.0));
+    /// assert_eq!(v3, Vec::new(2.0, 4.0, 6.0));
     /// ```
     #[inline]
-    pub fn vec3(self) -> Vector {
+    pub fn vec3(self) -> Vec {
         if self.w != 0.0 {
-            Vector::new(self.x / self.w, self.y / self.w, self.z / self.w)
+            Vec::new(self.x / self.w, self.y / self.w, self.z / self.w)
         } else {
-            Vector::new(self.x, self.y, self.z)
+            Vec::new(self.x, self.y, self.z)
         }
     }
 
@@ -1033,14 +1033,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::{Vector2, Vector4};
+    /// use crate::forge_engine::math::{Vec2, Vec4};
     ///
-    /// let v4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// let v4 = Vec4::new(1.0, 2.0, 3.0, 4.0);
     /// let v2 = v4.xy();
-    /// assert_eq!(v2, Vector2::new(1.0, 2.0));
+    /// assert_eq!(v2, Vec2::new(1.0, 2.0));
     /// ```
-    pub fn xy(self) -> Vector2 {
-        Vector2::new(self.x, self.y)
+    pub fn xy(self) -> Vec2 {
+        Vec2::new(self.x, self.y)
     }
 
     /// Returns a `Vector2` with the x and z components.
@@ -1048,14 +1048,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::{Vector2, Vector4};
+    /// use crate::forge_engine::math::{Vec2, Vec4};
     ///
-    /// let v4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// let v4 = Vec4::new(1.0, 2.0, 3.0, 4.0);
     /// let v2 = v4.xz();
-    /// assert_eq!(v2, Vector2::new(1.0, 3.0));
+    /// assert_eq!(v2, Vec2::new(1.0, 3.0));
     /// ```
-    pub fn xz(self) -> Vector2 {
-        Vector2::new(self.x, self.z)
+    pub fn xz(self) -> Vec2 {
+        Vec2::new(self.x, self.z)
     }
 
     /// Returns a `Vector2` with the x and w components.
@@ -1063,14 +1063,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::{Vector2, Vector4};
+    /// use crate::forge_engine::math::{Vec2, Vec4};
     ///
-    /// let v4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// let v4 = Vec4::new(1.0, 2.0, 3.0, 4.0);
     /// let v2 = v4.xw();
-    /// assert_eq!(v2, Vector2::new(1.0, 4.0));
+    /// assert_eq!(v2, Vec2::new(1.0, 4.0));
     /// ```
-    pub fn xw(self) -> Vector2 {
-        Vector2::new(self.x, self.w)
+    pub fn xw(self) -> Vec2 {
+        Vec2::new(self.x, self.w)
     }
 
     /// Returns a `Vector2` with the y and z components.
@@ -1078,14 +1078,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::{Vector2, Vector4};
+    /// use crate::forge_engine::math::{Vec2, Vec4};
     ///
-    /// let v4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// let v4 = Vec4::new(1.0, 2.0, 3.0, 4.0);
     /// let v2 = v4.yz();
-    /// assert_eq!(v2, Vector2::new(2.0, 3.0));
+    /// assert_eq!(v2, Vec2::new(2.0, 3.0));
     /// ```
-    pub fn yz(self) -> Vector2 {
-        Vector2::new(self.y, self.z)
+    pub fn yz(self) -> Vec2 {
+        Vec2::new(self.y, self.z)
     }
 
     /// Returns a `Vector2` with the y and w components.
@@ -1093,14 +1093,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::{Vector2, Vector4};
+    /// use crate::forge_engine::math::{Vec2, Vec4};
     ///
-    /// let v4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// let v4 = Vec4::new(1.0, 2.0, 3.0, 4.0);
     /// let v2 = v4.yw();
-    /// assert_eq!(v2, Vector2::new(2.0, 4.0));
+    /// assert_eq!(v2, Vec2::new(2.0, 4.0));
     /// ```
-    pub fn yw(self) -> Vector2 {
-        Vector2::new(self.y, self.w)
+    pub fn yw(self) -> Vec2 {
+        Vec2::new(self.y, self.w)
     }
 
     /// Returns a `Vector2` with the z and w components.
@@ -1108,14 +1108,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::{Vector2, Vector4};
+    /// use crate::forge_engine::math::{Vec2, Vec4};
     ///
-    /// let v4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// let v4 = Vec4::new(1.0, 2.0, 3.0, 4.0);
     /// let v2 = v4.zw();
-    /// assert_eq!(v2, Vector2::new(3.0, 4.0));
+    /// assert_eq!(v2, Vec2::new(3.0, 4.0));
     /// ```
-    pub fn zw(self) -> Vector2 {
-        Vector2::new(self.z, self.w)
+    pub fn zw(self) -> Vec2 {
+        Vec2::new(self.z, self.w)
     }
 
     /// Returns a `Vector2` with both components set to x.
@@ -1123,14 +1123,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::{Vector2, Vector4};
+    /// use crate::forge_engine::math::{Vec2, Vec4};
     ///
-    /// let v4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// let v4 = Vec4::new(1.0, 2.0, 3.0, 4.0);
     /// let v2 = v4.xx();
-    /// assert_eq!(v2, Vector2::new(1.0, 1.0));
+    /// assert_eq!(v2, Vec2::new(1.0, 1.0));
     /// ```
-    pub fn xx(self) -> Vector2 {
-        Vector2::new(self.x, self.x)
+    pub fn xx(self) -> Vec2 {
+        Vec2::new(self.x, self.x)
     }
 
     /// Returns a `Vector2` with both components set to y.
@@ -1138,14 +1138,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::{Vector2, Vector4};
+    /// use crate::forge_engine::math::{Vec2, Vec4};
     ///
-    /// let v4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// let v4 = Vec4::new(1.0, 2.0, 3.0, 4.0);
     /// let v2 = v4.yy();
-    /// assert_eq!(v2, Vector2::new(2.0, 2.0));
+    /// assert_eq!(v2, Vec2::new(2.0, 2.0));
     /// ```
-    pub fn yy(self) -> Vector2 {
-        Vector2::new(self.y, self.y)
+    pub fn yy(self) -> Vec2 {
+        Vec2::new(self.y, self.y)
     }
 
     /// Returns a `Vector2` with both components set to z.
@@ -1153,14 +1153,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::{Vector2, Vector4};
+    /// use crate::forge_engine::math::{Vec2, Vec4};
     ///
-    /// let v4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// let v4 = Vec4::new(1.0, 2.0, 3.0, 4.0);
     /// let v2 = v4.zz();
-    /// assert_eq!(v2, Vector2::new(3.0, 3.0));
+    /// assert_eq!(v2, Vec2::new(3.0, 3.0));
     /// ```
-    pub fn zz(self) -> Vector2 {
-        Vector2::new(self.z, self.z)
+    pub fn zz(self) -> Vec2 {
+        Vec2::new(self.z, self.z)
     }
 
     /// Returns a `Vector2` with both components set to w.
@@ -1168,14 +1168,14 @@ impl Vector4 {
     /// # Examples
     ///
     /// ```rust
-    /// use crate::forge_engine::math::{Vector2, Vector4};
+    /// use crate::forge_engine::math::{Vec2, Vec4};
     ///
-    /// let v4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+    /// let v4 = Vec4::new(1.0, 2.0, 3.0, 4.0);
     /// let v2 = v4.ww();
-    /// assert_eq!(v2, Vector2::new(4.0, 4.0));
+    /// assert_eq!(v2, Vec2::new(4.0, 4.0));
     /// ```
-    pub fn ww(self) -> Vector2 {
-        Vector2::new(self.w, self.w)
+    pub fn ww(self) -> Vec2 {
+        Vec2::new(self.w, self.w)
     }
 }
 
@@ -1195,7 +1195,7 @@ mod tests {
 
         #[test]
         fn test_vector4_construction() {
-            let v = Vector4::new(1.0, 2.0, 3.0, 4.0);
+            let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
             assert_eq!(v.x, 1.0);
             assert_eq!(v.y, 2.0);
             assert_eq!(v.z, 3.0);
@@ -1204,241 +1204,241 @@ mod tests {
 
         #[test]
         fn test_vector4_from_vec3() {
-            let v3 = Vector::new(1.0, 2.0, 3.0);
-            let v4 = Vector4::from_vec3(v3, 4.0);
-            assert_eq!(v4, Vector4::new(1.0, 2.0, 3.0, 4.0));
+            let v3 = Vec::new(1.0, 2.0, 3.0);
+            let v4 = Vec4::from_vec3(v3, 4.0);
+            assert_eq!(v4, Vec4::new(1.0, 2.0, 3.0, 4.0));
         }
 
         #[test]
         fn test_vector4_constants() {
-            assert_eq!(Vector4::ZERO, Vector4::new(0.0, 0.0, 0.0, 0.0));
-            assert_eq!(Vector4::ONE, Vector4::new(1.0, 1.0, 1.0, 1.0));
-            assert_eq!(Vector4::X, Vector4::new(1.0, 0.0, 0.0, 0.0));
-            assert_eq!(Vector4::Y, Vector4::new(0.0, 1.0, 0.0, 0.0));
-            assert_eq!(Vector4::Z, Vector4::new(0.0, 0.0, 1.0, 0.0));
-            assert_eq!(Vector4::W, Vector4::new(0.0, 0.0, 0.0, 1.0));
+            assert_eq!(Vec4::ZERO, Vec4::new(0.0, 0.0, 0.0, 0.0));
+            assert_eq!(Vec4::ONE, Vec4::new(1.0, 1.0, 1.0, 1.0));
+            assert_eq!(Vec4::X, Vec4::new(1.0, 0.0, 0.0, 0.0));
+            assert_eq!(Vec4::Y, Vec4::new(0.0, 1.0, 0.0, 0.0));
+            assert_eq!(Vec4::Z, Vec4::new(0.0, 0.0, 1.0, 0.0));
+            assert_eq!(Vec4::W, Vec4::new(0.0, 0.0, 0.0, 1.0));
         }
 
         #[test]
         fn test_vector4_from_tuple() {
-            let v: Vector4 = (1.0, 2.0, 3.0, 4.0).into();
-            assert_eq!(v, Vector4::new(1.0, 2.0, 3.0, 4.0));
+            let v: Vec4 = (1.0, 2.0, 3.0, 4.0).into();
+            assert_eq!(v, Vec4::new(1.0, 2.0, 3.0, 4.0));
         }
 
         #[test]
         fn test_vector4_from_array() {
-            let v: Vector4 = [1.0, 2.0, 3.0, 4.0].into();
-            assert_eq!(v, Vector4::new(1.0, 2.0, 3.0, 4.0));
+            let v: Vec4 = [1.0, 2.0, 3.0, 4.0].into();
+            assert_eq!(v, Vec4::new(1.0, 2.0, 3.0, 4.0));
         }
 
         #[test]
         fn test_vector4_from_vector3() {
-            let v3 = Vector::new(1.0, 2.0, 3.0);
-            let v4: Vector4 = v3.into();
-            assert_eq!(v4, Vector4::new(1.0, 2.0, 3.0, 1.0));
+            let v3 = Vec::new(1.0, 2.0, 3.0);
+            let v4: Vec4 = v3.into();
+            assert_eq!(v4, Vec4::new(1.0, 2.0, 3.0, 1.0));
         }
 
         #[test]
         fn test_vector4_from_vector2() {
-            let v2 = Vector2::new(1.0, 2.0);
-            let v4: Vector4 = v2.into();
-            assert_eq!(v4, Vector4::new(1.0, 2.0, 0.0, 1.0));
+            let v2 = Vec2::new(1.0, 2.0);
+            let v4: Vec4 = v2.into();
+            assert_eq!(v4, Vec4::new(1.0, 2.0, 0.0, 1.0));
         }
 
         #[test]
         fn test_vector4_to_tuple() {
-            let v = Vector4::new(1.0, 2.0, 3.0, 4.0);
+            let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
             let t: (f32, f32, f32, f32) = v.into();
             assert_eq!(t, (1.0, 2.0, 3.0, 4.0));
         }
 
         #[test]
         fn test_vector4_to_array() {
-            let v = Vector4::new(1.0, 2.0, 3.0, 4.0);
+            let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
             let arr: [f32; 4] = v.into();
             assert_eq!(arr, [1.0, 2.0, 3.0, 4.0]);
         }
 
         #[test]
         fn test_vector4_to_vector3() {
-            let v = Vector4::new(2.0, 4.0, 6.0, 2.0);
-            let v3: Vector = v.into();
-            assert_eq!(v3, Vector::new(1.0, 2.0, 3.0));
+            let v = Vec4::new(2.0, 4.0, 6.0, 2.0);
+            let v3: Vec = v.into();
+            assert_eq!(v3, Vec::new(1.0, 2.0, 3.0));
 
-            let v = Vector4::new(2.0, 4.0, 6.0, 0.0);
-            let v3: Vector = v.into();
-            assert_eq!(v3, Vector::new(2.0, 4.0, 6.0));
+            let v = Vec4::new(2.0, 4.0, 6.0, 0.0);
+            let v3: Vec = v.into();
+            assert_eq!(v3, Vec::new(2.0, 4.0, 6.0));
         }
 
         #[test]
         fn test_vector4_add() {
-            let a = Vector4::new(1.0, 2.0, 3.0, 4.0);
-            let b = Vector4::new(5.0, 6.0, 7.0, 8.0);
-            assert_eq!(a + b, Vector4::new(6.0, 8.0, 10.0, 12.0));
-            assert_eq!(a + 10.0, Vector4::new(11.0, 12.0, 13.0, 14.0));
-            assert_eq!(10.0 + a, Vector4::new(11.0, 12.0, 13.0, 14.0));
+            let a = Vec4::new(1.0, 2.0, 3.0, 4.0);
+            let b = Vec4::new(5.0, 6.0, 7.0, 8.0);
+            assert_eq!(a + b, Vec4::new(6.0, 8.0, 10.0, 12.0));
+            assert_eq!(a + 10.0, Vec4::new(11.0, 12.0, 13.0, 14.0));
+            assert_eq!(10.0 + a, Vec4::new(11.0, 12.0, 13.0, 14.0));
         }
 
         #[test]
         fn test_vector4_add_assign() {
-            let mut v = Vector4::new(1.0, 2.0, 3.0, 4.0);
-            v += Vector4::new(5.0, 6.0, 7.0, 8.0);
-            assert_eq!(v, Vector4::new(6.0, 8.0, 10.0, 12.0));
+            let mut v = Vec4::new(1.0, 2.0, 3.0, 4.0);
+            v += Vec4::new(5.0, 6.0, 7.0, 8.0);
+            assert_eq!(v, Vec4::new(6.0, 8.0, 10.0, 12.0));
         }
 
         #[test]
         fn test_vector4_sub() {
-            let a = Vector4::new(5.0, 6.0, 7.0, 8.0);
-            let b = Vector4::new(1.0, 2.0, 3.0, 4.0);
-            assert_eq!(a - b, Vector4::new(4.0, 4.0, 4.0, 4.0));
-            assert_eq!(a - 2.0, Vector4::new(3.0, 4.0, 5.0, 6.0));
-            assert_eq!(10.0 - a, Vector4::new(5.0, 4.0, 3.0, 2.0));
+            let a = Vec4::new(5.0, 6.0, 7.0, 8.0);
+            let b = Vec4::new(1.0, 2.0, 3.0, 4.0);
+            assert_eq!(a - b, Vec4::new(4.0, 4.0, 4.0, 4.0));
+            assert_eq!(a - 2.0, Vec4::new(3.0, 4.0, 5.0, 6.0));
+            assert_eq!(10.0 - a, Vec4::new(5.0, 4.0, 3.0, 2.0));
         }
 
         #[test]
         fn test_vector4_sub_assign() {
-            let mut v = Vector4::new(5.0, 6.0, 7.0, 8.0);
-            v -= Vector4::new(1.0, 2.0, 3.0, 4.0);
-            assert_eq!(v, Vector4::new(4.0, 4.0, 4.0, 4.0));
+            let mut v = Vec4::new(5.0, 6.0, 7.0, 8.0);
+            v -= Vec4::new(1.0, 2.0, 3.0, 4.0);
+            assert_eq!(v, Vec4::new(4.0, 4.0, 4.0, 4.0));
         }
 
         #[test]
         fn test_vector4_mul() {
-            let a = Vector4::new(2.0, 3.0, 4.0, 5.0);
-            let b = Vector4::new(6.0, 7.0, 8.0, 9.0);
-            assert_eq!(a * b, Vector4::new(12.0, 21.0, 32.0, 45.0));
-            assert_eq!(a * 2.0, Vector4::new(4.0, 6.0, 8.0, 10.0));
-            assert_eq!(2.0 * a, Vector4::new(4.0, 6.0, 8.0, 10.0));
+            let a = Vec4::new(2.0, 3.0, 4.0, 5.0);
+            let b = Vec4::new(6.0, 7.0, 8.0, 9.0);
+            assert_eq!(a * b, Vec4::new(12.0, 21.0, 32.0, 45.0));
+            assert_eq!(a * 2.0, Vec4::new(4.0, 6.0, 8.0, 10.0));
+            assert_eq!(2.0 * a, Vec4::new(4.0, 6.0, 8.0, 10.0));
         }
 
         #[test]
         fn test_vector4_mul_assign() {
-            let mut v = Vector4::new(2.0, 3.0, 4.0, 5.0);
-            v *= Vector4::new(6.0, 7.0, 8.0, 9.0);
-            assert_eq!(v, Vector4::new(12.0, 21.0, 32.0, 45.0));
+            let mut v = Vec4::new(2.0, 3.0, 4.0, 5.0);
+            v *= Vec4::new(6.0, 7.0, 8.0, 9.0);
+            assert_eq!(v, Vec4::new(12.0, 21.0, 32.0, 45.0));
         }
 
         #[test]
         fn test_vector4_div() {
-            let a = Vector4::new(12.0, 21.0, 32.0, 45.0);
-            let b = Vector4::new(6.0, 7.0, 8.0, 9.0);
-            assert_eq!(a / b, Vector4::new(2.0, 3.0, 4.0, 5.0));
-            assert_eq!(a / 2.0, Vector4::new(6.0, 10.5, 16.0, 22.5));
+            let a = Vec4::new(12.0, 21.0, 32.0, 45.0);
+            let b = Vec4::new(6.0, 7.0, 8.0, 9.0);
+            assert_eq!(a / b, Vec4::new(2.0, 3.0, 4.0, 5.0));
+            assert_eq!(a / 2.0, Vec4::new(6.0, 10.5, 16.0, 22.5));
             assert_eq!(
                 60.0 / a,
-                Vector4::new(5.0, 60.0 / 21.0, 60.0 / 32.0, 60.0 / 45.0)
+                Vec4::new(5.0, 60.0 / 21.0, 60.0 / 32.0, 60.0 / 45.0)
             );
         }
 
         #[test]
         fn test_vector4_div_assign() {
-            let mut v = Vector4::new(12.0, 21.0, 32.0, 45.0);
-            v /= Vector4::new(6.0, 7.0, 8.0, 9.0);
-            assert_eq!(v, Vector4::new(2.0, 3.0, 4.0, 5.0));
+            let mut v = Vec4::new(12.0, 21.0, 32.0, 45.0);
+            v /= Vec4::new(6.0, 7.0, 8.0, 9.0);
+            assert_eq!(v, Vec4::new(2.0, 3.0, 4.0, 5.0));
         }
 
         #[test]
         fn test_vector4_neg() {
-            let v = Vector4::new(1.0, -2.0, 3.0, -4.0);
-            assert_eq!(-v, Vector4::new(-1.0, 2.0, -3.0, 4.0));
+            let v = Vec4::new(1.0, -2.0, 3.0, -4.0);
+            assert_eq!(-v, Vec4::new(-1.0, 2.0, -3.0, 4.0));
         }
 
         #[test]
         fn test_vector4_dot() {
-            let a = Vector4::new(1.0, 2.0, 3.0, 4.0);
-            let b = Vector4::new(5.0, 6.0, 7.0, 8.0);
+            let a = Vec4::new(1.0, 2.0, 3.0, 4.0);
+            let b = Vec4::new(5.0, 6.0, 7.0, 8.0);
             assert_eq!(a.dot(b), 70.0);
         }
 
         #[test]
         fn test_vector4_magnitude() {
-            let v = Vector4::new(1.0, 2.0, 2.0, 4.0);
+            let v = Vec4::new(1.0, 2.0, 2.0, 4.0);
             assert_eq!(v.magnitude(), 5.0);
             assert_eq!(v.magnitude_squared(), 25.0);
         }
 
         #[test]
         fn test_vector4_normalized() {
-            let v = Vector4::new(0.0, 3.0, 0.0, 4.0);
+            let v = Vec4::new(0.0, 3.0, 0.0, 4.0);
             let n = v.normalized();
             assert!(approx_eq(n.magnitude(), 1.0));
-            assert_eq!(n, Vector4::new(0.0, 0.6, 0.0, 0.8));
+            assert_eq!(n, Vec4::new(0.0, 0.6, 0.0, 0.8));
         }
 
         #[test]
         fn test_vector4_normalized_zero() {
-            let v = Vector4::ZERO;
+            let v = Vec4::ZERO;
             let n = v.normalized();
-            assert_eq!(n, Vector4::ZERO);
+            assert_eq!(n, Vec4::ZERO);
         }
 
         #[test]
         fn test_vector4_is_zero() {
-            assert!(Vector4::ZERO.is_zero());
-            assert!(!Vector4::ONE.is_zero());
+            assert!(Vec4::ZERO.is_zero());
+            assert!(!Vec4::ONE.is_zero());
         }
 
         #[test]
         fn test_vector4_is_normalised() {
-            assert!(Vector4::X.is_normalised());
-            assert!(Vector4::new(0.0, 0.6, 0.0, 0.8).is_normalised());
-            assert!(!Vector4::new(1.0, 2.0, 2.0, 4.0).is_normalised());
+            assert!(Vec4::X.is_normalised());
+            assert!(Vec4::new(0.0, 0.6, 0.0, 0.8).is_normalised());
+            assert!(!Vec4::new(1.0, 2.0, 2.0, 4.0).is_normalised());
         }
 
         #[test]
         fn test_vector4_safe_normal() {
-            let v = Vector4::new(3.0, 4.0, 0.0, 0.0);
+            let v = Vec4::new(3.0, 4.0, 0.0, 0.0);
             assert_eq!(v.safe_normal(), Some(v.normalized()));
-            assert_eq!(Vector4::ZERO.safe_normal(), None);
+            assert_eq!(Vec4::ZERO.safe_normal(), None);
         }
 
         #[test]
         fn test_vector4_lerp() {
-            let a = Vector4::new(0.0, 0.0, 0.0, 0.0);
-            let b = Vector4::new(10.0, 20.0, 30.0, 40.0);
+            let a = Vec4::new(0.0, 0.0, 0.0, 0.0);
+            let b = Vec4::new(10.0, 20.0, 30.0, 40.0);
             assert_eq!(a.lerp(b, 0.0), a);
             assert_eq!(a.lerp(b, 1.0), b);
-            assert_eq!(a.lerp(b, 0.5), Vector4::new(5.0, 10.0, 15.0, 20.0));
+            assert_eq!(a.lerp(b, 0.5), Vec4::new(5.0, 10.0, 15.0, 20.0));
         }
 
         #[test]
         fn test_vector4_distance() {
-            let a = Vector4::new(1.0, 2.0, 3.0, 4.0);
-            let b = Vector4::new(5.0, 6.0, 7.0, 8.0);
+            let a = Vec4::new(1.0, 2.0, 3.0, 4.0);
+            let b = Vec4::new(5.0, 6.0, 7.0, 8.0);
             assert_eq!(a.distance(b), 8.0);
             assert_eq!(a.distance_squared(b), 64.0);
         }
 
         #[test]
         fn test_vector4_abs() {
-            let v = Vector4::new(-1.0, 2.0, -3.0, 4.0);
-            assert_eq!(v.abs(), Vector4::new(1.0, 2.0, 3.0, 4.0));
+            let v = Vec4::new(-1.0, 2.0, -3.0, 4.0);
+            assert_eq!(v.abs(), Vec4::new(1.0, 2.0, 3.0, 4.0));
         }
 
         #[test]
         fn test_vector4_min_max() {
-            let a = Vector4::new(1.0, 5.0, 3.0, 7.0);
-            let b = Vector4::new(4.0, 2.0, 6.0, 1.0);
-            assert_eq!(a.min(b), Vector4::new(1.0, 2.0, 3.0, 1.0));
-            assert_eq!(a.max(b), Vector4::new(4.0, 5.0, 6.0, 7.0));
+            let a = Vec4::new(1.0, 5.0, 3.0, 7.0);
+            let b = Vec4::new(4.0, 2.0, 6.0, 1.0);
+            assert_eq!(a.min(b), Vec4::new(1.0, 2.0, 3.0, 1.0));
+            assert_eq!(a.max(b), Vec4::new(4.0, 5.0, 6.0, 7.0));
         }
 
         #[test]
         fn test_vector4_clamp() {
-            let v = Vector4::new(-1.0, 5.0, 2.0, 8.0);
-            let min = Vector4::new(0.0, 0.0, 0.0, 0.0);
-            let max = Vector4::new(3.0, 3.0, 3.0, 3.0);
-            assert_eq!(v.clamp(min, max), Vector4::new(0.0, 3.0, 2.0, 3.0));
+            let v = Vec4::new(-1.0, 5.0, 2.0, 8.0);
+            let min = Vec4::new(0.0, 0.0, 0.0, 0.0);
+            let max = Vec4::new(3.0, 3.0, 3.0, 3.0);
+            assert_eq!(v.clamp(min, max), Vec4::new(0.0, 3.0, 2.0, 3.0));
         }
 
         #[test]
         fn test_vector4_project_reject() {
-            let v = Vector4::new(3.0, 4.0, 5.0, 6.0);
-            let onto = Vector4::new(1.0, 0.0, 0.0, 0.0);
+            let v = Vec4::new(3.0, 4.0, 5.0, 6.0);
+            let onto = Vec4::new(1.0, 0.0, 0.0, 0.0);
             let proj = v.project_onto(onto);
             let rej = v.reject_from(onto);
-            assert_eq!(proj, Vector4::new(3.0, 0.0, 0.0, 0.0));
-            assert_eq!(rej, Vector4::new(0.0, 4.0, 5.0, 6.0));
+            assert_eq!(proj, Vec4::new(3.0, 0.0, 0.0, 0.0));
+            assert_eq!(rej, Vec4::new(0.0, 4.0, 5.0, 6.0));
             assert!(approx_eq((proj + rej).x, v.x));
             assert!(approx_eq((proj + rej).y, v.y));
             assert!(approx_eq((proj + rej).z, v.z));
@@ -1447,58 +1447,58 @@ mod tests {
 
         #[test]
         fn test_vector4_reflect() {
-            let v = Vector4::new(1.0, -1.0, 0.0, 0.0);
-            let normal = Vector4::new(0.0, 1.0, 0.0, 0.0);
+            let v = Vec4::new(1.0, -1.0, 0.0, 0.0);
+            let normal = Vec4::new(0.0, 1.0, 0.0, 0.0);
             let reflected = v.reflect(normal);
-            assert_eq!(reflected, Vector4::new(1.0, 1.0, 0.0, 0.0));
+            assert_eq!(reflected, Vec4::new(1.0, 1.0, 0.0, 0.0));
         }
 
         #[test]
         fn test_vector4_pow_sqrt() {
-            let v = Vector4::new(4.0, 9.0, 16.0, 25.0);
-            assert_eq!(v.pow(2.0), Vector4::new(16.0, 81.0, 256.0, 625.0));
-            assert_eq!(v.sqrt(), Vector4::new(2.0, 3.0, 4.0, 5.0));
+            let v = Vec4::new(4.0, 9.0, 16.0, 25.0);
+            assert_eq!(v.pow(2.0), Vec4::new(16.0, 81.0, 256.0, 625.0));
+            assert_eq!(v.sqrt(), Vec4::new(2.0, 3.0, 4.0, 5.0));
         }
 
         #[test]
         fn test_vector4_xyz() {
-            let v = Vector4::new(1.0, 2.0, 3.0, 4.0);
-            assert_eq!(v.xyz(), Vector::new(1.0, 2.0, 3.0));
+            let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
+            assert_eq!(v.xyz(), Vec::new(1.0, 2.0, 3.0));
         }
 
         #[test]
         fn test_vector4_to_vec3() {
-            let v = Vector4::new(2.0, 4.0, 6.0, 2.0);
-            assert_eq!(v.vec3(), Vector::new(1.0, 2.0, 3.0));
+            let v = Vec4::new(2.0, 4.0, 6.0, 2.0);
+            assert_eq!(v.vec3(), Vec::new(1.0, 2.0, 3.0));
 
-            let v = Vector4::new(2.0, 4.0, 6.0, 0.0);
-            assert_eq!(v.vec3(), Vector::new(2.0, 4.0, 6.0));
+            let v = Vec4::new(2.0, 4.0, 6.0, 0.0);
+            assert_eq!(v.vec3(), Vec::new(2.0, 4.0, 6.0));
         }
 
         #[test]
         fn test_vector4_swizzle() {
-            let v = Vector4::new(1.0, 2.0, 3.0, 4.0);
-            assert_eq!(v.xy(), Vector2::new(1.0, 2.0));
-            assert_eq!(v.xz(), Vector2::new(1.0, 3.0));
-            assert_eq!(v.xw(), Vector2::new(1.0, 4.0));
-            assert_eq!(v.yz(), Vector2::new(2.0, 3.0));
-            assert_eq!(v.yw(), Vector2::new(2.0, 4.0));
-            assert_eq!(v.zw(), Vector2::new(3.0, 4.0));
-            assert_eq!(v.xx(), Vector2::new(1.0, 1.0));
-            assert_eq!(v.yy(), Vector2::new(2.0, 2.0));
-            assert_eq!(v.zz(), Vector2::new(3.0, 3.0));
-            assert_eq!(v.ww(), Vector2::new(4.0, 4.0));
+            let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
+            assert_eq!(v.xy(), Vec2::new(1.0, 2.0));
+            assert_eq!(v.xz(), Vec2::new(1.0, 3.0));
+            assert_eq!(v.xw(), Vec2::new(1.0, 4.0));
+            assert_eq!(v.yz(), Vec2::new(2.0, 3.0));
+            assert_eq!(v.yw(), Vec2::new(2.0, 4.0));
+            assert_eq!(v.zw(), Vec2::new(3.0, 4.0));
+            assert_eq!(v.xx(), Vec2::new(1.0, 1.0));
+            assert_eq!(v.yy(), Vec2::new(2.0, 2.0));
+            assert_eq!(v.zz(), Vec2::new(3.0, 3.0));
+            assert_eq!(v.ww(), Vec2::new(4.0, 4.0));
         }
 
         #[test]
         fn test_vector4_default() {
-            let v: Vector4 = Default::default();
-            assert_eq!(v, Vector4::ZERO);
+            let v: Vec4 = Default::default();
+            assert_eq!(v, Vec4::ZERO);
         }
 
         #[test]
         fn test_vector4_indexing() {
-            let mut v = Vector4::new(1.0, 2.0, 3.0, 4.0);
+            let mut v = Vec4::new(1.0, 2.0, 3.0, 4.0);
 
             // Read access
             assert_eq!(v[0], 1.0);
@@ -1511,13 +1511,13 @@ mod tests {
             v[1] = 6.0;
             v[2] = 7.0;
             v[3] = 8.0;
-            assert_eq!(v, Vector4::new(5.0, 6.0, 7.0, 8.0));
+            assert_eq!(v, Vec4::new(5.0, 6.0, 7.0, 8.0));
         }
 
         #[test]
         #[should_panic(expected = "Vector4 index 4 out of bounds")]
         fn test_vector4_index_out_of_bounds() {
-            let v = Vector4::new(1.0, 2.0, 3.0, 4.0);
+            let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
             let _ = v[4];
         }
     }

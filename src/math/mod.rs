@@ -2,7 +2,7 @@ mod matrix;
 mod vector;
 
 // Re-export the main types for convenience
-pub use vector::Vector;
-pub use vector::Vector2;
-pub use vector::Vector3;
-pub use vector::Vector4;
+pub use vector::Vec;
+pub use vector::Vec2;
+pub use vector::Vec3;
+pub use vector::Vec4;
