@@ -27,8 +27,8 @@ rotate_x/y/z(f32) - Multiply by rotation
 scale(Vector) - Multiply by scale
  */
 
-use crate::math::{Vec2, Vec4};
-use std::ops::{Add, AddAssign, Deref, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
+use crate::math::{Vec4};
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 use crate::Vec;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
