@@ -105,7 +105,7 @@ impl Mat4 {
         }
     }
 
-    pub fn from_translation(translation: Vec) -> Self {
+    pub fn translation(translation: Vec) -> Self {
         Mat4 {
             e: [
                 Vec4::new(1.0, 0.0, 0.0, 0.0),
@@ -116,7 +116,7 @@ impl Mat4 {
         }
     }
 
-    pub fn from_scale(scaling: Vec) -> Self {
+    pub fn scaling(scaling: Vec) -> Self {
         Mat4 {
             e: [
                 Vec4::new(scaling.x, 0.0, 0.0, 0.0),
@@ -127,7 +127,7 @@ impl Mat4 {
         }
     }
 
-    pub fn from_rotation_x(angle: f32) -> Self {
+    pub fn rotation_x(angle: f32) -> Self {
         let cos = angle.cos();
         let sin = angle.sin();
         Mat4 {
@@ -140,7 +140,7 @@ impl Mat4 {
         }
     }
 
-    pub fn from_rotation_y(angle: f32) -> Self {
+    pub fn rotation_y(angle: f32) -> Self {
         let cos = angle.cos();
         let sin = angle.sin();
         Mat4 {
@@ -153,7 +153,7 @@ impl Mat4 {
         }
     }
 
-    pub fn from_rotation_z(angle: f32) -> Self {
+    pub fn rotation_z(angle: f32) -> Self {
         let cos = angle.cos();
         let sin = angle.sin();
         Mat4 {
@@ -166,7 +166,7 @@ impl Mat4 {
         }
     }
 
-    pub fn from_rotation(axis: Vec, angle: f32) -> Self {
+    pub fn rotation(axis: Vec, angle: f32) -> Self {
         let cos = angle.cos();
         let sin = angle.sin();
         let one_minus_cos = 1.0 - cos;
@@ -196,6 +196,35 @@ impl Mat4 {
                 Vec4::new(y_axis.x, y_axis.y, y_axis.z, 0.0),
                 Vec4::new(z_axis.x, z_axis.y, z_axis.z, 0.0),
                 Vec4::new(-x_axis.dot(eye), -y_axis.dot(eye), -z_axis.dot(eye), 1.0),
+            ],
+        }
+    }
+
+    /// Creates a perspective projection matrix.
+    ///
+    /// # Arguments
+    /// * `fov_y` - Vertical field of view in radians
+    /// * `aspect` - Aspect ratio (width / height)  
+    /// * `near` - Near clipping plane distance (positive)
+    /// * `far` - Far clipping plane distance (positive)
+    pub fn perspective(fov_y: f32, aspect: f32, near: f32, far: f32) -> Self {
+        assert!(fov_y > 0.0, "Field of view must be positive");
+        assert!(aspect > 0.0, "Aspect ratio must be positive");
+        assert!(near > 0.0, "Near plane must be positive");
+        assert!(far > near, "Far plane must be greater than near plane");
+
+        let f = 1.0 / (fov_y / 2.0).tan();
+
+        let z_range = near - far;  // This will be negative
+        let a = (far + near) / z_range;
+        let b = (2.0 * far * near) / z_range;
+
+        Mat4 {
+            e: [
+                Vec4::new(f / aspect, 0.0, 0.0, 0.0),
+                Vec4::new(0.0, f, 0.0, 0.0),
+                Vec4::new(0.0, 0.0, a, b),
+                Vec4::new(0.0, 0.0, -1.0, 0.0),
             ],
         }
     }
@@ -766,26 +795,34 @@ impl Mat4 {
 
 impl Mat4 {
     pub fn translate(&self, translation: Vec) -> Self {
-        *self * Mat4::from_translation(translation)
+        *self * Mat4::translation(translation)
     }
 
     pub fn scale(&self, scaling: Vec) -> Self {
-        *self * Mat4::from_scale(scaling)
+        *self * Mat4::scaling(scaling)
     }
 
     pub fn rotate_x(&self, angle: f32) -> Self {
-        *self * Mat4::from_rotation_x(angle)
+        *self * Mat4::rotation_x(angle)
     }
 
     pub fn rotate_y(&self, angle: f32) -> Self {
-        *self * Mat4::from_rotation_y(angle)
+        *self * Mat4::rotation_y(angle)
     }
 
     pub fn rotate_z(&self, angle: f32) -> Self {
-        *self * Mat4::from_rotation_z(angle)
+        *self * Mat4::rotation_z(angle)
     }
 
     pub fn rotate(&self, axis: Vec, angle: f32) -> Self {
-        *self * Mat4::from_rotation(axis, angle)
+        *self * Mat4::rotation(axis, angle)
+    }
+    
+    pub fn look_at(&self, eye: Vec, target: Vec, up: Vec) -> Self {
+        *self * Mat4::from_look_at(eye, target, up)
+    }
+    
+    pub fn p_project(&self, fov_y: f32, aspect: f32, near: f32, far: f32) -> Self {
+        *self * Mat4::perspective(fov_y, aspect, near, far)
     }
 }
