@@ -826,3 +826,586 @@ impl Mat4 {
         *self * Mat4::perspective(fov_y, aspect, near, far)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::f32::consts::PI;
+
+    // Helper function for floating point comparisons
+    fn approx_eq(a: f32, b: f32) -> bool {
+        (a - b).abs() < 1e-6
+    }
+
+    fn approx_eq_mat4(a: Mat4, b: Mat4) -> bool {
+        for i in 0..4 {
+            for j in 0..4 {
+                if !approx_eq(a[i][j], b[i][j]) {
+                    return false;
+                }
+            }
+        }
+        true
+    }
+
+    #[test]
+    fn test_mat4_new() {
+        let m = Mat4::new(
+            1.0, 2.0, 3.0, 4.0,
+            5.0, 6.0, 7.0, 8.0,
+            9.0, 10.0, 11.0, 12.0,
+            13.0, 14.0, 15.0, 16.0,
+        );
+
+        assert_eq!(m[0][0], 1.0);
+        assert_eq!(m[0][3], 4.0);
+        assert_eq!(m[3][3], 16.0);
+    }
+
+    #[test]
+    fn test_mat4_from_rows() {
+        let row1 = Vec4::new(1.0, 2.0, 3.0, 4.0);
+        let row2 = Vec4::new(5.0, 6.0, 7.0, 8.0);
+        let row3 = Vec4::new(9.0, 10.0, 11.0, 12.0);
+        let row4 = Vec4::new(13.0, 14.0, 15.0, 16.0);
+
+        let m = Mat4::from_rows(row1, row2, row3, row4);
+
+        assert_eq!(m.row(0), row1);
+        assert_eq!(m.row(1), row2);
+        assert_eq!(m.row(2), row3);
+        assert_eq!(m.row(3), row4);
+    }
+
+    #[test]
+    fn test_mat4_from_cols() {
+        let col1 = Vec4::new(1.0, 2.0, 3.0, 4.0);
+        let col2 = Vec4::new(5.0, 6.0, 7.0, 8.0);
+        let col3 = Vec4::new(9.0, 10.0, 11.0, 12.0);
+        let col4 = Vec4::new(13.0, 14.0, 15.0, 16.0);
+
+        let m = Mat4::from_cols(col1, col2, col3, col4);
+
+        assert_eq!(m.col(0), col1);
+        assert_eq!(m.col(1), col2);
+        assert_eq!(m.col(2), col3);
+        assert_eq!(m.col(3), col4);
+    }
+
+    #[test]
+    fn test_mat4_constants() {
+        assert_eq!(Mat4::IDENTITY[0][0], 1.0);
+        assert_eq!(Mat4::IDENTITY[1][1], 1.0);
+        assert_eq!(Mat4::IDENTITY[2][2], 1.0);
+        assert_eq!(Mat4::IDENTITY[3][3], 1.0);
+        assert_eq!(Mat4::IDENTITY[0][1], 0.0);
+
+        assert!(Mat4::ZERO.is_zero());
+
+        assert_eq!(Mat4::FLIP_X[0][0], -1.0);
+        assert_eq!(Mat4::FLIP_Y[1][1], -1.0);
+        assert_eq!(Mat4::FLIP_Z[2][2], -1.0);
+    }
+
+    #[test]
+    fn test_mat4_translation() {
+        let t = Vec::new(5.0, 10.0, 15.0);
+        let m = Mat4::translation(t);
+
+        assert_eq!(m[3][0], 5.0);
+        assert_eq!(m[3][1], 10.0);
+        assert_eq!(m[3][2], 15.0);
+        assert_eq!(m[3][3], 1.0);
+
+        // Test translation of a point
+        let point = Vec::new(1.0, 2.0, 3.0);
+        let transformed = m.transform_point(point);
+        assert_eq!(transformed, Vec::new(6.0, 12.0, 18.0));
+    }
+
+    #[test]
+    fn test_mat4_scaling() {
+        let s = Vec::new(2.0, 3.0, 4.0);
+        let m = Mat4::scaling(s);
+
+        assert_eq!(m[0][0], 2.0);
+        assert_eq!(m[1][1], 3.0);
+        assert_eq!(m[2][2], 4.0);
+
+        // Test scaling of a point
+        let point = Vec::new(1.0, 2.0, 3.0);
+        let transformed = m.transform_point(point);
+        assert_eq!(transformed, Vec::new(2.0, 6.0, 12.0));
+    }
+
+    #[test]
+    fn test_mat4_rotation_x() {
+        let m = Mat4::rotation_x(PI / 2.0);
+        let point = Vec::new(0.0, 1.0, 0.0);
+        let transformed = m.transform_point(point);
+
+        assert!(approx_eq(transformed.x, 0.0));
+        assert!(approx_eq(transformed.y, 0.0));
+        assert!(approx_eq(transformed.z, 1.0));
+    }
+
+    #[test]
+    fn test_mat4_rotation_y() {
+        let m = Mat4::rotation_y(PI / 2.0);
+        let point = Vec::new(1.0, 0.0, 0.0);
+        let transformed = m.transform_point(point);
+
+        assert!(approx_eq(transformed.x, 0.0));
+        assert!(approx_eq(transformed.y, 0.0));
+        assert!(approx_eq(transformed.z, -1.0));
+    }
+
+    #[test]
+    fn test_mat4_rotation_z() {
+        let m = Mat4::rotation_z(PI / 2.0);
+        let point = Vec::new(1.0, 0.0, 0.0);
+        let transformed = m.transform_point(point);
+
+        assert!(approx_eq(transformed.x, 0.0));
+        assert!(approx_eq(transformed.y, 1.0));
+        assert!(approx_eq(transformed.z, 0.0));
+    }
+
+    #[test]
+    fn test_mat4_rotation_arbitrary_axis() {
+        let axis = Vec::new(0.0, 0.0, 1.0); // Z axis
+        let m = Mat4::rotation(axis, PI / 2.0);
+        let point = Vec::new(1.0, 0.0, 0.0);
+        let transformed = m.transform_point(point);
+
+        assert!(approx_eq(transformed.x, 0.0));
+        assert!(approx_eq(transformed.y, 1.0));
+        assert!(approx_eq(transformed.z, 0.0));
+    }
+
+    #[test]
+    fn test_mat4_look_at() {
+        let eye = Vec::new(0.0, 0.0, 5.0);
+        let target = Vec::new(0.0, 0.0, 0.0);
+        let up = Vec::new(0.0, 1.0, 0.0);
+
+        let m = Mat4::from_look_at(eye, target, up);
+
+        // The z-axis should point from target to eye (normalized)
+        let z_axis = m.col(2).xyz();
+        let expected_z = Vec::new(0.0, 0.0, 1.0);
+        assert!(approx_eq(z_axis.x, expected_z.x));
+        assert!(approx_eq(z_axis.y, expected_z.y));
+        assert!(approx_eq(z_axis.z, expected_z.z));
+    }
+
+    #[test]
+    fn test_mat4_perspective() {
+        let fov = PI / 4.0; // 45 degrees
+        let aspect = 16.0 / 9.0;
+        let near = 0.1;
+        let far = 100.0;
+
+        let m = Mat4::perspective(fov, aspect, near, far);
+
+        // Check that w coordinate becomes -z (perspective divide)
+        assert!(approx_eq(m[3][2], -1.0));
+        assert!(approx_eq(m[3][3], 0.0));
+    }
+
+    #[test]
+    #[should_panic(expected = "Field of view must be positive")]
+    fn test_mat4_perspective_invalid_fov() {
+        Mat4::perspective(-1.0, 1.0, 0.1, 100.0);
+    }
+
+    #[test]
+    #[should_panic(expected = "Aspect ratio must be positive")]
+    fn test_mat4_perspective_invalid_aspect() {
+        Mat4::perspective(PI / 4.0, -1.0, 0.1, 100.0);
+    }
+
+    #[test]
+    #[should_panic(expected = "Near plane must be positive")]
+    fn test_mat4_perspective_invalid_near() {
+        Mat4::perspective(PI / 4.0, 1.0, -0.1, 100.0);
+    }
+
+    #[test]
+    #[should_panic(expected = "Far plane must be greater than near plane")]
+    fn test_mat4_perspective_invalid_far() {
+        Mat4::perspective(PI / 4.0, 1.0, 100.0, 50.0);
+    }
+
+    #[test]
+    fn test_mat4_conversions() {
+        let arr = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0,
+            9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0];
+        let m: Mat4 = arr.into();
+        let back: [f32; 16] = m.into();
+
+        for i in 0..16 {
+            assert_eq!(arr[i], back[i]);
+        }
+    }
+
+    #[test]
+    fn test_mat4_from_scalar() {
+        let m: Mat4 = 5.0.into();
+        for i in 0..4 {
+            for j in 0..4 {
+                assert_eq!(m[i][j], 5.0);
+            }
+        }
+    }
+
+    #[test]
+    fn test_mat4_indexing() {
+        let mut m = Mat4::IDENTITY;
+
+        // Test read access
+        assert_eq!(m[0][0], 1.0);
+        assert_eq!(m[1][1], 1.0);
+
+        // Test write access
+        m[0][1] = 5.0;
+        assert_eq!(m[0][1], 5.0);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_mat4_index_out_of_bounds() {
+        let m = Mat4::IDENTITY;
+        let _ = m[4];
+    }
+
+    #[test]
+    fn test_mat4_rows_and_cols() {
+        let m = Mat4::new(
+            1.0, 2.0, 3.0, 4.0,
+            5.0, 6.0, 7.0, 8.0,
+            9.0, 10.0, 11.0, 12.0,
+            13.0, 14.0, 15.0, 16.0,
+        );
+
+        // Test row access
+        assert_eq!(m.row(0), Vec4::new(1.0, 2.0, 3.0, 4.0));
+        assert_eq!(m.row(3), Vec4::new(13.0, 14.0, 15.0, 16.0));
+
+        // Test column access
+        assert_eq!(m.col(0), Vec4::new(1.0, 5.0, 9.0, 13.0));
+        assert_eq!(m.col(3), Vec4::new(4.0, 8.0, 12.0, 16.0));
+    }
+
+    #[test]
+    fn test_mat4_set_row_and_col() {
+        let mut m = Mat4::ZERO;
+
+        let new_row = Vec4::new(1.0, 2.0, 3.0, 4.0);
+        m.set_row(0, new_row);
+        assert_eq!(m.row(0), new_row);
+
+        let new_col = Vec4::new(5.0, 6.0, 7.0, 8.0);
+        m.set_col(1, new_col);
+        assert_eq!(m.col(1), new_col);
+    }
+
+    #[test]
+    fn test_mat4_set_element() {
+        let mut m = Mat4::ZERO;
+        m.set(2, 3, 42.0);
+        assert_eq!(m[2][3], 42.0);
+    }
+
+    #[test]
+    fn test_mat4_addition() {
+        let a = Mat4::IDENTITY;
+        let b = Mat4::IDENTITY;
+        let c = a + b;
+
+        for i in 0..4 {
+            assert_eq!(c[i][i], 2.0);
+        }
+    }
+
+    #[test]
+    fn test_mat4_addition_assign() {
+        let mut a = Mat4::IDENTITY;
+        a += Mat4::IDENTITY;
+
+        for i in 0..4 {
+            assert_eq!(a[i][i], 2.0);
+        }
+    }
+
+    #[test]
+    fn test_mat4_subtraction() {
+        let a = Mat4::IDENTITY;
+        let b = Mat4::IDENTITY;
+        let c = a - b;
+
+        assert!(c.is_zero());
+    }
+
+    #[test]
+    fn test_mat4_multiplication_identity() {
+        let a = Mat4::translation(Vec::new(1.0, 2.0, 3.0));
+        let result = a * Mat4::IDENTITY;
+
+        assert_eq!(a, result);
+    }
+
+    #[test]
+    fn test_mat4_multiplication_transforms() {
+        let translate = Mat4::translation(Vec::new(5.0, 0.0, 0.0));
+        let scale = Mat4::scaling(Vec::new(2.0, 2.0, 2.0));
+
+        // Scale then translate
+        let combined = translate * scale;
+        let point = Vec::new(1.0, 1.0, 1.0);
+        let result = combined.transform_point(point);
+
+        assert_eq!(result, Vec::new(7.0, 2.0, 2.0)); // scaled to (2,2,2) then translated by (5,0,0)
+    }
+
+    #[test]
+    fn test_mat4_vector_multiplication() {
+        let m = Mat4::translation(Vec::new(5.0, 10.0, 15.0));
+        let v = Vec4::new(1.0, 2.0, 3.0, 1.0);
+        let result = m * v;
+
+        assert_eq!(result, Vec4::new(6.0, 12.0, 18.0, 1.0));
+    }
+
+    #[test]
+    fn test_mat4_scalar_multiplication() {
+        let m = Mat4::IDENTITY;
+        let scaled = m * 3.0;
+
+        for i in 0..4 {
+            assert_eq!(scaled[i][i], 3.0);
+        }
+
+        // Test commutative property
+        let scaled2 = 3.0 * m;
+        assert_eq!(scaled, scaled2);
+    }
+
+    #[test]
+    fn test_mat4_scalar_division() {
+        let m = Mat4::IDENTITY * 6.0;
+        let divided = m / 2.0;
+
+        for i in 0..4 {
+            assert_eq!(divided[i][i], 3.0);
+        }
+    }
+
+    #[test]
+    #[should_panic(expected = "Division by zero")]
+    fn test_mat4_division_by_zero() {
+        let m = Mat4::IDENTITY;
+        let _ = m / 0.0;
+    }
+
+    #[test]
+    fn test_mat4_transform_point_vs_direction() {
+        let translate = Mat4::translation(Vec::new(5.0, 0.0, 0.0));
+
+        let point = Vec::new(1.0, 0.0, 0.0);
+        let direction = Vec::new(1.0, 0.0, 0.0);
+
+        let transformed_point = translate.transform_point(point);
+        let transformed_direction = translate.transform_direction(direction);
+
+        // Point should be translated
+        assert_eq!(transformed_point, Vec::new(6.0, 0.0, 0.0));
+        // Direction should not be affected by translation
+        assert_eq!(transformed_direction, Vec::new(1.0, 0.0, 0.0));
+    }
+
+    #[test]
+    fn test_mat4_negation() {
+        let m = Mat4::IDENTITY;
+        let neg = -m;
+
+        for i in 0..4 {
+            assert_eq!(neg[i][i], -1.0);
+        }
+    }
+
+    #[test]
+    fn test_mat4_determinant() {
+        // Test identity determinant
+        assert!(approx_eq(Mat4::IDENTITY.determinant(), 1.0));
+
+        // Test scaling matrix determinant
+        let scale = Mat4::scaling(Vec::new(2.0, 3.0, 4.0));
+        assert!(approx_eq(scale.determinant(), 24.0)); // 2 * 3 * 4 * 1
+    }
+
+    #[test]
+    fn test_mat4_transpose() {
+        let m = Mat4::new(
+            1.0, 2.0, 3.0, 4.0,
+            5.0, 6.0, 7.0, 8.0,
+            9.0, 10.0, 11.0, 12.0,
+            13.0, 14.0, 15.0, 16.0,
+        );
+
+        let transposed = m.transpose();
+
+        assert_eq!(transposed[0][1], 5.0);
+        assert_eq!(transposed[1][0], 2.0);
+        assert_eq!(transposed[2][3], 16.0);
+        assert_eq!(transposed[3][2], 12.0);
+    }
+
+    #[test]
+    fn test_mat4_transpose_mut() {
+        let mut m = Mat4::new(
+            1.0, 2.0, 3.0, 4.0,
+            5.0, 6.0, 7.0, 8.0,
+            9.0, 10.0, 11.0, 12.0,
+            13.0, 14.0, 15.0, 16.0,
+        );
+
+        m.transpose_mut();
+
+        assert_eq!(m[0][1], 5.0);
+        assert_eq!(m[1][0], 2.0);
+    }
+
+    #[test]
+    fn test_mat4_inverse() {
+        // Test identity inverse
+        let inv = Mat4::IDENTITY.inverse().unwrap();
+        assert!(approx_eq_mat4(inv, Mat4::IDENTITY));
+
+        // Test translation inverse
+        let translate = Mat4::translation(Vec::new(5.0, 10.0, 15.0));
+        let inv_translate = translate.inverse().unwrap();
+        let should_be_identity = translate * inv_translate;
+        assert!(approx_eq_mat4(should_be_identity, Mat4::IDENTITY));
+    }
+
+    #[test]
+    fn test_mat4_inverse_non_invertible() {
+        let non_invertible = Mat4::ZERO;
+        assert!(non_invertible.inverse().is_none());
+    }
+
+    #[test]
+    fn test_mat4_trace() {
+        let m = Mat4::new(
+            1.0, 2.0, 3.0, 4.0,
+            5.0, 6.0, 7.0, 8.0,
+            9.0, 10.0, 11.0, 12.0,
+            13.0, 14.0, 15.0, 16.0,
+        );
+
+        assert_eq!(m.trace(), 34.0); // 1 + 6 + 11 + 16
+    }
+
+    #[test]
+    fn test_mat4_utility_checks() {
+        assert!(Mat4::IDENTITY.is_identity());
+        assert!(!Mat4::ZERO.is_identity());
+
+        assert!(Mat4::ZERO.is_zero());
+        assert!(!Mat4::IDENTITY.is_zero());
+
+        assert!(Mat4::IDENTITY.is_invertible());
+        assert!(!Mat4::ZERO.is_invertible());
+    }
+
+    #[test]
+    fn test_mat4_chainable_operations() {
+        let result = Mat4::IDENTITY
+            .translate(Vec::new(5.0, 0.0, 0.0))
+            .scale(Vec::new(2.0, 2.0, 2.0))
+            .rotate_z(PI / 2.0);
+
+        let point = Vec::new(1.0, 0.0, 0.0);
+        let transformed = result.transform_point(point);
+
+        // After scaling by 2: (2, 0, 0)
+        // After rotating 90° around Z: (0, 2, 0)  
+        // After translating by (5, 0, 0): (5, 2, 0)
+        assert!(approx_eq(transformed.x, 5.0));
+        assert!(approx_eq(transformed.y, 2.0));
+        assert!(approx_eq(transformed.z, 0.0));
+    }
+
+    #[test]
+    fn test_mat4_composition_order() {
+        // Matrix multiplication is not commutative
+        let translate = Mat4::translation(Vec::new(5.0, 0.0, 0.0));
+        let scale = Mat4::scaling(Vec::new(2.0, 1.0, 1.0));
+
+        let translate_then_scale = scale * translate;
+        let scale_then_translate = translate * scale;
+
+        let point = Vec::new(1.0, 0.0, 0.0);
+
+        let result1 = translate_then_scale.transform_point(point);
+        let result2 = scale_then_translate.transform_point(point);
+
+        // Should produce different results
+        assert!(!approx_eq(result1.x, result2.x));
+    }
+
+    #[test]
+    fn test_mat4_from_mul() {
+        let a = Mat4::translation(Vec::new(1.0, 2.0, 3.0));
+        let b = Mat4::scaling(Vec::new(2.0, 2.0, 2.0));
+
+        let c1 = Mat4::from_mul(a, b);
+        let c2 = a * b;
+
+        assert_eq!(c1, c2);
+    }
+
+    #[test]
+    fn test_mat4_column_access_bounds() {
+        let m = Mat4::IDENTITY;
+
+        // Valid access
+        let _ = m.col(0);
+        let _ = m.col(3);
+
+        // Should panic for invalid access
+        std::panic::catch_unwind(|| m.col(4)).expect_err("Should panic for col index 4");
+    }
+
+    #[test]
+    fn test_mat4_row_column_setters_bounds() {
+        let mut m = Mat4::IDENTITY;
+
+        // Should panic for out of bounds
+        std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            m.set_row(4, Vec4::ZERO);
+        })).expect_err("Should panic for row index 4");
+
+        std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            m.set_col(4, Vec4::ZERO);
+        })).expect_err("Should panic for col index 4");
+    }
+
+    #[test]
+    fn test_mat4_comprehensive_transform_chain() {
+        // Test a realistic transform chain: scale -> rotate -> translate
+        let point = Vec::new(1.0, 0.0, 0.0);
+
+        let transform = Mat4::IDENTITY
+            .scale(Vec::new(2.0, 2.0, 2.0))           // Scale to (2, 0, 0)
+            .rotate_z(PI / 2.0)                        // Rotate to (0, 2, 0)
+            .translate(Vec::new(10.0, 20.0, 30.0));    // Translate to (10, 22, 30)
+
+        let result = transform.transform_point(point);
+
+        assert!(approx_eq(result.x, 10.0));
+        assert!(approx_eq(result.y, 22.0));
+        assert!(approx_eq(result.z, 30.0));
+    }
+}
