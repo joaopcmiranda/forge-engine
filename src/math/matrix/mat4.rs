@@ -2,7 +2,6 @@
 Constructors
 
 from_quaternion(Quaternion) - When you add quaternions later
-look_at(eye, target, up) - View matrix
 perspective(fov, aspect, near, far) - Projection matrix
 orthographic(left, right, bottom, top, near, far) - Ortho projection
 
@@ -66,10 +65,10 @@ impl Mat4 {
 
     pub fn from_cols(col1: Vec4, col2: Vec4, col3: Vec4, col4: Vec4) -> Self {
         Mat4::new(
-            col1.x, col2.x, col3.x, col4.x,  // Row 0: x components of each column
-            col1.y, col2.y, col3.y, col4.y,  // Row 1: y components of each column
-            col1.z, col2.z, col3.z, col4.z,  // Row 2: z components of each column
-            col1.w, col2.w, col3.w, col4.w,  // Row 3: w components of each column
+            col1.x, col2.x, col3.x, col4.x,
+            col1.y, col2.y, col3.y, col4.y,
+            col1.z, col2.z, col3.z, col4.z,
+            col1.w, col2.w, col3.w, col4.w,
         )
     }
 
@@ -105,19 +104,19 @@ impl Mat4 {
             ],
         }
     }
-    
-    pub  fn from_translation(translation: Vec) -> Self {
+
+    pub fn from_translation(translation: Vec) -> Self {
         Mat4 {
             e: [
-                Vec4::new(1.0, 0.0, 0.0, translation.x),
-                Vec4::new(0.0, 1.0, 0.0, translation.y),
-                Vec4::new(0.0, 0.0, 1.0, translation.z),
-                Vec4::new(0.0, 0.0, 0.0, 1.0),
+                Vec4::new(1.0, 0.0, 0.0, 0.0),
+                Vec4::new(0.0, 1.0, 0.0, 0.0),
+                Vec4::new(0.0, 0.0, 1.0, 0.0),
+                Vec4::new(translation.x, translation.y, translation.z, 1.0),
             ],
         }
     }
-    
-    pub  fn from_scale(scaling: Vec) -> Self {
+
+    pub fn from_scale(scaling: Vec) -> Self {
         Mat4 {
             e: [
                 Vec4::new(scaling.x, 0.0, 0.0, 0.0),
@@ -127,48 +126,47 @@ impl Mat4 {
             ],
         }
     }
-    
-    pub  fn from_rotation_x(angle: f32) -> Self {
+
+    pub fn from_rotation_x(angle: f32) -> Self {
         let cos = angle.cos();
         let sin = angle.sin();
         Mat4 {
             e: [
                 Vec4::new(1.0, 0.0, 0.0, 0.0),
-                Vec4::new(0.0, cos, -sin, 0.0),
-                Vec4::new(0.0, sin, cos, 0.0),
+                Vec4::new(0.0, cos, sin, 0.0),
+                Vec4::new(0.0, -sin, cos, 0.0),
                 Vec4::new(0.0, 0.0, 0.0, 1.0),
             ],
         }
     }
-    
-    pub  fn from_rotation_y(angle: f32) -> Self {
+
+    pub fn from_rotation_y(angle: f32) -> Self {
         let cos = angle.cos();
         let sin = angle.sin();
         Mat4 {
             e: [
-                Vec4::new(cos, 0.0, sin, 0.0),
+                Vec4::new(cos, 0.0, -sin, 0.0),
                 Vec4::new(0.0, 1.0, 0.0, 0.0),
-                Vec4::new(-sin, 0.0, cos, 0.0),
+                Vec4::new(sin, 0.0, cos, 0.0),
                 Vec4::new(0.0, 0.0, 0.0, 1.0),
             ],
         }
     }
-    
-    pub  fn from_rotation_z(angle: f32) -> Self {
+
+    pub fn from_rotation_z(angle: f32) -> Self {
         let cos = angle.cos();
         let sin = angle.sin();
         Mat4 {
             e: [
-                Vec4::new(cos, -sin, 0.0, 0.0),
-                Vec4::new(sin, cos, 0.0, 0.0),
+                Vec4::new(cos, sin, 0.0, 0.0),
+                Vec4::new(-sin, cos, 0.0, 0.0),
                 Vec4::new(0.0, 0.0, 1.0, 0.0),
                 Vec4::new(0.0, 0.0, 0.0, 1.0),
             ],
         }
     }
-    
-    // Todo: Learn this!
-    pub  fn from_rotation(axis: Vec, angle: f32) -> Self {
+
+    pub fn from_rotation(axis: Vec, angle: f32) -> Self {
         let cos = angle.cos();
         let sin = angle.sin();
         let one_minus_cos = 1.0 - cos;
@@ -179,10 +177,25 @@ impl Mat4 {
 
         Mat4 {
             e: [
-                Vec4::new(cos + x * x * one_minus_cos, y * x * one_minus_cos + z * sin, z * x * one_minus_cos - y * sin, 0.0),
-                Vec4::new(x * y * one_minus_cos - z * sin, cos + y * y * one_minus_cos, z * y * one_minus_cos + x * sin, 0.0),
-                Vec4::new(x * z * one_minus_cos + y * sin, y * z * one_minus_cos - x * sin, cos + z * z * one_minus_cos, 0.0),
+                Vec4::new(cos + x * x * one_minus_cos, x * y * one_minus_cos + z * sin, x * z * one_minus_cos - y * sin, 0.0),
+                Vec4::new(y * x * one_minus_cos - z * sin, cos + y * y * one_minus_cos, y * z * one_minus_cos + x * sin, 0.0),
+                Vec4::new(z * x * one_minus_cos + y * sin, z * y * one_minus_cos - x * sin, cos + z * z * one_minus_cos, 0.0),
                 Vec4::new(0.0, 0.0, 0.0, 1.0),
+            ],
+        }
+    }
+
+    pub fn from_look_at(eye: Vec, target: Vec, up: Vec) -> Self {
+        let z_axis = (eye - target).normalized();
+        let x_axis = up.cross(z_axis).normalized();
+        let y_axis = z_axis.cross(x_axis);
+
+        Mat4 {
+            e: [
+                Vec4::new(x_axis.x, x_axis.y, x_axis.z, 0.0),
+                Vec4::new(y_axis.x, y_axis.y, y_axis.z, 0.0),
+                Vec4::new(z_axis.x, z_axis.y, z_axis.z, 0.0),
+                Vec4::new(-x_axis.dot(eye), -y_axis.dot(eye), -z_axis.dot(eye), 1.0),
             ],
         }
     }
@@ -192,14 +205,18 @@ impl Mat4 {
 
 impl Mat4 {
     pub const IDENTITY: Self = Mat4 {
-        e: [Vec4::X, Vec4::Y, Vec4::Z, Vec4::W],
+        e: [
+            Vec4 { x: 1.0, y: 0.0, z: 0.0, w: 0.0 },
+            Vec4 { x: 0.0, y: 1.0, z: 0.0, w: 0.0 },
+            Vec4 { x: 0.0, y: 0.0, z: 1.0, w: 0.0 },
+            Vec4 { x: 0.0, y: 0.0, z: 0.0, w: 1.0 }
+        ]
     };
 
     pub const ZERO: Self = Mat4 {
         e: [Vec4::ZERO, Vec4::ZERO, Vec4::ZERO, Vec4::ZERO],
     };
 
-    // Standard transformations
     pub const FLIP_X: Self = Mat4 {
         e: [
             Vec4 { x:-1.0, y:0.0, z:0.0, w:0.0 },
@@ -232,8 +249,8 @@ impl Mat4 {
     pub const Y_UP_TO_Z_UP: Self = Mat4 {
         e: [
             Vec4 { x:1.0, y:0.0, z:0.0, w:0.0 },
-            Vec4 { x:0.0, y:0.0, z:1.0, w:0.0 },
-            Vec4 { x:0.0, y:-1.0, z:0.0, w:0.0 },
+            Vec4 { x:0.0, y:0.0, z:-1.0, w:0.0 },
+            Vec4 { x:0.0, y:1.0, z:0.0, w:0.0 },
             Vec4 { x:0.0, y:0.0, z:0.0, w:1.0 }
         ]
     };
@@ -389,7 +406,7 @@ impl Mat4 {
         }
     }
 
-    pub  fn set (&mut self, i: usize, j: usize, value: f32) {
+    pub fn set (&mut self, i: usize, j: usize, value: f32) {
         if i < 4 && j < 4 {
             self[i][j] = value;
         } else {
@@ -644,18 +661,16 @@ struct Mat3 {
 }
 
 impl Mat3 {
-    pub  fn determinant(&self) -> f32 {
-        // Calculate the determinant of the 3x3 matrix
+    pub fn determinant(&self) -> f32 {
         self.e[0].x * (self.e[1].y * self.e[2].z - self.e[1].z * self.e[2].y) -
-        self.e[0].y * (self.e[1].x * self.e[2].z - self.e[1].z * self.e[2].x) +
-        self.e[0].z * (self.e[1].x * self.e[2].y - self.e[1].y * self.e[2].x)
+            self.e[0].y * (self.e[1].x * self.e[2].z - self.e[1].z * self.e[2].x) +
+            self.e[0].z * (self.e[1].x * self.e[2].y - self.e[1].y * self.e[2].x)
     }
 }
 
 
-impl Mat4 {   
+impl Mat4 {
     fn minor(&self, row: usize, col: usize) -> Mat3 {
-        // Calculate the minor of the matrix by removing the specified row and column
         let mut minor = Mat3 { e: [Vec::ZERO; 3] };
         let mut minor_row = 0;
         for i in 0..4 {
@@ -670,15 +685,14 @@ impl Mat4 {
         }
         minor
     }
-    
+
     fn determinant(&self) -> f32 {
-        // Calculate the determinant using the first row and minors
         self.e[0].x * self.minor(0, 0).determinant() -
-        self.e[0].y * self.minor(0, 1).determinant() +
-        self.e[0].z * self.minor(0, 2).determinant() -
-        self.e[0].w * self.minor(0, 3).determinant()
+            self.e[0].y * self.minor(0, 1).determinant() +
+            self.e[0].z * self.minor(0, 2).determinant() -
+            self.e[0].w * self.minor(0, 3).determinant()
     }
-    
+
     fn cofactor_matrix(&self) -> Mat4 {
         let mut cofactor = Mat4::ZERO;
         for i in 0..4 {
@@ -694,11 +708,11 @@ impl Mat4 {
     pub fn adjoint(&self) -> Self {
         self.cofactor_matrix().transpose()
     }
-    
-    pub  fn inverse(&self) -> Option<Self> {
+
+    pub fn inverse(&self) -> Option<Self> {
         let det = self.determinant();
         if det.abs() < 1e-6 {
-            None // Matrix is not invertible
+            None
         } else {
             Some(self.adjoint() / det)
         }
@@ -725,8 +739,8 @@ impl Mat4 {
 
         self
     }
-    
-    pub  fn trace(&self) -> f32 {
+
+    pub fn trace(&self) -> f32 {
         self.e[0].x + self.e[1].y + self.e[2].z + self.e[3].w
     }
 }
@@ -735,15 +749,14 @@ impl Mat4 {
 
 impl Mat4 {
     pub fn is_identity(&self) -> bool {
-        self.e[0] == Vec4::X && self.e[1] == Vec4::Y &&
-        self.e[2] == Vec4::Z && self.e[3] == Vec4::W
+        *self == Mat4::IDENTITY
     }
 
     pub fn is_zero(&self) -> bool {
         self.e[0].is_zero() && self.e[1].is_zero() &&
-        self.e[2].is_zero() && self.e[3].is_zero()
+            self.e[2].is_zero() && self.e[3].is_zero()
     }
-    
+
     pub fn is_invertible(&self) -> bool {
         self.determinant().abs() > 1e-6
     }
@@ -755,24 +768,24 @@ impl Mat4 {
     pub fn translate(&self, translation: Vec) -> Self {
         *self * Mat4::from_translation(translation)
     }
-    
+
     pub fn scale(&self, scaling: Vec) -> Self {
         *self * Mat4::from_scale(scaling)
     }
-    
+
     pub fn rotate_x(&self, angle: f32) -> Self {
         *self * Mat4::from_rotation_x(angle)
     }
-    
+
     pub fn rotate_y(&self, angle: f32) -> Self {
         *self * Mat4::from_rotation_y(angle)
     }
-    
+
     pub fn rotate_z(&self, angle: f32) -> Self {
         *self * Mat4::from_rotation_z(angle)
     }
-    
-    pub  fn rotate(&self, axis: Vec, angle: f32) -> Self {
+
+    pub fn rotate(&self, axis: Vec, angle: f32) -> Self {
         *self * Mat4::from_rotation(axis, angle)
     }
 }
