@@ -270,6 +270,49 @@ impl From<Vec4> for Vec {
     }
 }
 
+// Utility setters 
+impl Vec4 {
+    /// Overwrites the vector with new x.
+    pub fn with_x(self, x: f32) -> Self {
+        Vec4 {
+            x,
+            y: self.y,
+            z: self.z,
+            w: self.w,
+        }
+    }
+
+    /// Overwrites the vector with new y.
+    pub fn with_y(self, y: f32) -> Self {
+        Vec4 {
+            x: self.x,
+            y,
+            z: self.z,
+            w: self.w,
+        }
+    }
+
+    /// Overwrites the vector with new z.
+    pub fn with_z(self, z: f32) -> Self {
+        Vec4 {
+            x: self.x,
+            y: self.y,
+            z,
+            w: self.w,
+        }
+    }
+
+    /// Overwrites the vector with new w.
+    pub fn with_w(self, w: f32) -> Self {
+        Vec4 {
+            x: self.x,
+            y: self.y,
+            z: self.z,
+            w,
+        }
+    }
+}
+
 // Operators
 
 impl Index<usize> for Vec4 {

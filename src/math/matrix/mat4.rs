@@ -1,10 +1,6 @@
 /*
 Constructors
 
-from_translation(Vector) - Translation matrix
-from_rotation_x/y/z(f32) - Single-axis rotation matrices
-from_rotation(Vector, f32) - Arbitrary axis rotation
-from_scale(Vector) - Scale matrix
 from_quaternion(Quaternion) - When you add quaternions later
 look_at(eye, target, up) - View matrix
 perspective(fov, aspect, near, far) - Projection matrix
@@ -20,11 +16,6 @@ Utility Operations
 
 lerp(other, t) - Linear interpolation
 
-Composition Helpers
-
-translate(Vector) - Multiply by translation
-rotate_x/y/z(f32) - Multiply by rotation
-scale(Vector) - Multiply by scale
  */
 
 use crate::math::{Vec4};
@@ -111,6 +102,87 @@ impl Mat4 {
                     rows[3].dot(cols[2]),
                     rows[3].dot(cols[3]),
                 ),
+            ],
+        }
+    }
+    
+    pub  fn from_translation(translation: Vec) -> Self {
+        Mat4 {
+            e: [
+                Vec4::new(1.0, 0.0, 0.0, translation.x),
+                Vec4::new(0.0, 1.0, 0.0, translation.y),
+                Vec4::new(0.0, 0.0, 1.0, translation.z),
+                Vec4::new(0.0, 0.0, 0.0, 1.0),
+            ],
+        }
+    }
+    
+    pub  fn from_scale(scaling: Vec) -> Self {
+        Mat4 {
+            e: [
+                Vec4::new(scaling.x, 0.0, 0.0, 0.0),
+                Vec4::new(0.0, scaling.y, 0.0, 0.0),
+                Vec4::new(0.0, 0.0, scaling.z, 0.0),
+                Vec4::new(0.0, 0.0, 0.0, 1.0),
+            ],
+        }
+    }
+    
+    pub  fn from_rotation_x(angle: f32) -> Self {
+        let cos = angle.cos();
+        let sin = angle.sin();
+        Mat4 {
+            e: [
+                Vec4::new(1.0, 0.0, 0.0, 0.0),
+                Vec4::new(0.0, cos, -sin, 0.0),
+                Vec4::new(0.0, sin, cos, 0.0),
+                Vec4::new(0.0, 0.0, 0.0, 1.0),
+            ],
+        }
+    }
+    
+    pub  fn from_rotation_y(angle: f32) -> Self {
+        let cos = angle.cos();
+        let sin = angle.sin();
+        Mat4 {
+            e: [
+                Vec4::new(cos, 0.0, sin, 0.0),
+                Vec4::new(0.0, 1.0, 0.0, 0.0),
+                Vec4::new(-sin, 0.0, cos, 0.0),
+                Vec4::new(0.0, 0.0, 0.0, 1.0),
+            ],
+        }
+    }
+    
+    pub  fn from_rotation_z(angle: f32) -> Self {
+        let cos = angle.cos();
+        let sin = angle.sin();
+        Mat4 {
+            e: [
+                Vec4::new(cos, -sin, 0.0, 0.0),
+                Vec4::new(sin, cos, 0.0, 0.0),
+                Vec4::new(0.0, 0.0, 1.0, 0.0),
+                Vec4::new(0.0, 0.0, 0.0, 1.0),
+            ],
+        }
+    }
+    
+    // Todo: Learn this!
+    pub  fn from_rotation(axis: Vec, angle: f32) -> Self {
+        let cos = angle.cos();
+        let sin = angle.sin();
+        let one_minus_cos = 1.0 - cos;
+
+        let x = axis.x;
+        let y = axis.y;
+        let z = axis.z;
+
+        Mat4 {
+            e: [
+                Vec4::new(cos + x * x * one_minus_cos, y * x * one_minus_cos + z * sin, z * x * one_minus_cos - y * sin, 0.0),
+                Vec4::new(x * y * one_minus_cos - z * sin, cos + y * y * one_minus_cos, z * y * one_minus_cos + x * sin, 0.0),
+                Vec4::new(x * z * one_minus_cos + y * sin, y * z * one_minus_cos - x * sin, cos + z * z * one_minus_cos, 0.0),
+                Vec4::new(0.0, 0.0, 0.0, 1.0),
             ],
         }
     }
@@ -674,5 +746,33 @@ impl Mat4 {
     
     pub fn is_invertible(&self) -> bool {
         self.determinant().abs() > 1e-6
+    }
+}
+
+// Matrix - Composition Helpers, chainable operations
+
+impl Mat4 {
+    pub fn translate(&self, translation: Vec) -> Self {
+        *self * Mat4::from_translation(translation)
+    }
+    
+    pub fn scale(&self, scaling: Vec) -> Self {
+        *self * Mat4::from_scale(scaling)
+    }
+    
+    pub fn rotate_x(&self, angle: f32) -> Self {
+        *self * Mat4::from_rotation_x(angle)
+    }
+    
+    pub fn rotate_y(&self, angle: f32) -> Self {
+        *self * Mat4::from_rotation_y(angle)
+    }
+    
+    pub fn rotate_z(&self, angle: f32) -> Self {
+        *self * Mat4::from_rotation_z(angle)
+    }
+    
+    pub  fn rotate(&self, axis: Vec, angle: f32) -> Self {
+        *self * Mat4::from_rotation(axis, angle)
     }
 }
