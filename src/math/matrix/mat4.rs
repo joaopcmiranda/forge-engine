@@ -37,7 +37,7 @@ impl Mat4 {
         Mat4 {
             e: [
                 Vec4::new(row1.x, row2.x, row3.x, row4.x), // col 0
-                Vec4::new(row1.y, row2.y, row3.y, row4.y), // col 1  
+                Vec4::new(row1.y, row2.y, row3.y, row4.y), // col 1
                 Vec4::new(row1.z, row2.z, row3.z, row4.z), // col 2
                 Vec4::new(row1.w, row2.w, row3.w, row4.w), // col 3
             ],
@@ -192,7 +192,7 @@ impl Mat4 {
     ///
     /// # Arguments
     /// * `fov_y` - Vertical field of view in radians
-    /// * `aspect` - Aspect ratio (width / height)  
+    /// * `aspect` - Aspect ratio (width / height)
     /// * `near` - Near clipping plane distance (positive)
     /// * `far` - Far clipping plane distance (positive)
     pub fn perspective(fov_y: f32, aspect: f32, near: f32, far: f32) -> Self {
@@ -328,7 +328,7 @@ impl Into<[f32; 16]> for Mat4 {
         [
             // Column 0
             self.e[0].x, self.e[0].y, self.e[0].z, self.e[0].w,
-            // Column 1  
+            // Column 1
             self.e[1].x, self.e[1].y, self.e[1].z, self.e[1].w,
             // Column 2
             self.e[2].x, self.e[2].y, self.e[2].z, self.e[2].w,
@@ -426,7 +426,7 @@ impl Mat4 {
             _ => panic!("Row index {} out of bounds (0..4)", i),
         }
     }
-    
+
     /// Sets matrix[row][col] = value
     pub fn set(&mut self, row: usize, col: usize, value: f32) {
         if row < 4 && col < 4 {
@@ -814,11 +814,11 @@ impl Mat4 {
     pub fn rotate(&self, axis: Vec, angle: f32) -> Self {
         *self * Mat4::rotation(axis, angle)
     }
-    
+
     pub fn look_at(&self, eye: Vec, target: Vec, up: Vec) -> Self {
         *self * Mat4::from_look_at(eye, target, up)
     }
-    
+
     pub fn p_project(&self, fov_y: f32, aspect: f32, near: f32, far: f32) -> Self {
         *self * Mat4::perspective(fov_y, aspect, near, far)
     }
@@ -1030,13 +1030,6 @@ mod mat4_transformation_tests {
         assert!((a.x - b.x).abs() < tolerance, "x: {} vs {}", a.x, b.x);
         assert!((a.y - b.y).abs() < tolerance, "y: {} vs {}", a.y, b.y);
         assert!((a.z - b.z).abs() < tolerance, "z: {} vs {}", a.z, b.z);
-    }
-
-    fn assert_vec4_approx_eq(a: Vec4, b: Vec4, tolerance: f32) {
-        assert!((a.x - b.x).abs() < tolerance, "x: {} vs {}", a.x, b.x);
-        assert!((a.y - b.y).abs() < tolerance, "y: {} vs {}", a.y, b.y);
-        assert!((a.z - b.z).abs() < tolerance, "z: {} vs {}", a.z, b.z);
-        assert!((a.w - b.w).abs() < tolerance, "w: {} vs {}", a.w, b.w);
     }
 
     #[test]
