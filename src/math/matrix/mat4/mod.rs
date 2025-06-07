@@ -681,7 +681,7 @@ impl Neg for Mat4 {
 
 impl Mat4 {
     fn minor(&self, row: usize, col: usize) -> Mat3 {
-        let mut minor = Mat3 { e: [Vec::ZERO; 3] };
+        let mut minor = Mat3::from([Vec::ZERO; 3]);
         let mut minor_row = 0;
         for i in 0..4 {
             if i == row { continue; }

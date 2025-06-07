@@ -353,6 +353,13 @@ impl MulAssign<Vec3> for Vec3 {
     }
 }
 
+/// Multiplies this vector by a scalar in place.
+impl MulAssign<f32> for Vec3 {
+    fn mul_assign(&mut self, other: f32) {
+        *self = Vec3::new(self.x * other, self.y * other, self.z * other);
+    }
+}
+
 /// Divides two vectors component-wise.
 impl Div<Vec3> for Vec3 {
     type Output = Vec3;
@@ -381,6 +388,13 @@ impl Div<Vec3> for f32 {
 impl DivAssign<Vec3> for Vec3 {
     fn div_assign(&mut self, other: Vec3) {
         *self = Vec3::new(self.x / other.x, self.y / other.y, self.z / other.z);
+    }
+}
+
+/// Divides this vector by a scalar in place.
+impl DivAssign<f32> for Vec3 {
+    fn div_assign(&mut self, other: f32) {
+        *self = Vec3::new(self.x / other, self.y / other, self.z / other);
     }
 }
 
