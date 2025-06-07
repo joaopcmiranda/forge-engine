@@ -8,3 +8,4 @@ pub use vector::Vec3;
 pub use vector::Vec4;
 
 pub use matrix::Mat4;
+pub use matrix::Mat3;
