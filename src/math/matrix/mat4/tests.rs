@@ -421,9 +421,9 @@ fn test_from_look_at_orthogonal_basis() {
     let mat = Mat4::from_look_at(eye, target, up);
 
     // The first three columns should form an orthonormal basis
-    let x_axis = mat.col(0).xyz();
-    let y_axis = mat.col(1).xyz();
-    let z_axis = mat.col(2).xyz();
+    let x_axis = s!(mat.col(0), x y z);
+    let y_axis = s!(mat.col(1), x y z);
+    let z_axis = s!(mat.col(2), x y z);
 
     // Check orthogonality
     assert!((x_axis.dot(y_axis)).abs() < TOLERANCE);

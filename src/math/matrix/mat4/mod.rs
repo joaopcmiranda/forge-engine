@@ -16,9 +16,9 @@ lerp(other, t) - Linear interpolation
 
  */
 
-use crate::math::{Vec4,Mat3};
+use crate::math::{Vec3,Vec4,Mat3};
 use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
-use crate::Vec;
+use crate::{s, Vec};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Mat4 {
@@ -551,7 +551,7 @@ impl Mul<Vec> for Mat4 {
     fn mul(self, vec: Vec) -> Self::Output {
         let vec4 = Vec4::from_vec3(vec, 1.0);
         let result = self * vec4;
-        result.xyz()
+        s!(result, x y z)
     }
 }
 
@@ -649,13 +649,13 @@ impl Mat4 {
     pub fn transform_point(&self, point: Vec) -> Vec {
         let vec4 = Vec4::from_vec3(point, 1.0);
         let result = *self * vec4;
-        result.xyz()
+        s!(result, x y z)
     }
 
     pub fn transform_direction(&self, direction: Vec) -> Vec {
         let vec4 = Vec4::from_vec3(direction, 0.0);
         let result = *self * vec4;
-        result.xyz()
+        s!(result, x y z)
     }
 }
 

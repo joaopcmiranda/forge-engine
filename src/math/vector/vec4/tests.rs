@@ -276,36 +276,6 @@ fn test_vector4_pow_sqrt() {
 }
 
 #[test]
-fn test_vector4_xyz() {
-    let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
-    assert_eq!(v.xyz(), Vec::new(1.0, 2.0, 3.0));
-}
-
-#[test]
-fn test_vector4_to_vec3() {
-    let v = Vec4::new(2.0, 4.0, 6.0, 2.0);
-    assert_eq!(v.vec3(), Vec::new(1.0, 2.0, 3.0));
-
-    let v = Vec4::new(2.0, 4.0, 6.0, 0.0);
-    assert_eq!(v.vec3(), Vec::new(2.0, 4.0, 6.0));
-}
-
-#[test]
-fn test_vector4_swizzle() {
-    let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
-    assert_eq!(v.xy(), Vec2::new(1.0, 2.0));
-    assert_eq!(v.xz(), Vec2::new(1.0, 3.0));
-    assert_eq!(v.xw(), Vec2::new(1.0, 4.0));
-    assert_eq!(v.yz(), Vec2::new(2.0, 3.0));
-    assert_eq!(v.yw(), Vec2::new(2.0, 4.0));
-    assert_eq!(v.zw(), Vec2::new(3.0, 4.0));
-    assert_eq!(v.xx(), Vec2::new(1.0, 1.0));
-    assert_eq!(v.yy(), Vec2::new(2.0, 2.0));
-    assert_eq!(v.zz(), Vec2::new(3.0, 3.0));
-    assert_eq!(v.ww(), Vec2::new(4.0, 4.0));
-}
-
-#[test]
 fn test_vector4_default() {
     let v: Vec4 = Default::default();
     assert_eq!(v, Vec4::ZERO);

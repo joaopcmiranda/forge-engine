@@ -1,6 +1,7 @@
 #[cfg(test)]
 use super::*;
 use std::f32::consts::PI;
+use crate::s;
 
 // Helper function for floating point comparisons
 fn approx_eq(a: f32, b: f32) -> bool {
@@ -19,7 +20,7 @@ fn test_vector2_to_vector3_conversion() {
 #[test]
 fn test_vector3_to_vector2_conversion() {
     let v3 = Vec::new(3.0, 4.0, 5.0);
-    let v2 = v3.vec2();
+    let v2 = s!(v3, x y);
     assert_eq!(v2, Vec2::new(3.0, 4.0));
 }
 
@@ -33,7 +34,7 @@ fn test_vector3_to_vector4_conversion() {
 #[test]
 fn test_vector4_to_vector3_conversion() {
     let v4 = Vec4::new(4.0, 6.0, 8.0, 2.0);
-    let v3 = v4.vec3();
+    let v3 = s!(v4, x y z);
     assert_eq!(v3, Vec::new(2.0, 3.0, 4.0));
 }
 

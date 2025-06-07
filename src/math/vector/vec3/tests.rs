@@ -264,27 +264,6 @@ fn test_vector3_pow_sqrt() {
 }
 
 #[test]
-fn test_vector3_swizzle() {
-    let v = Vec3::new(1.0, 2.0, 3.0);
-    assert_eq!(v.xy(), Vec2::new(1.0, 2.0));
-    assert_eq!(v.yx(), Vec2::new(2.0, 1.0));
-    assert_eq!(v.xz(), Vec2::new(1.0, 3.0));
-    assert_eq!(v.zx(), Vec2::new(3.0, 1.0));
-    assert_eq!(v.yz(), Vec2::new(2.0, 3.0));
-    assert_eq!(v.zy(), Vec2::new(3.0, 2.0));
-    assert_eq!(v.xx(), Vec2::new(1.0, 1.0));
-    assert_eq!(v.yy(), Vec2::new(2.0, 2.0));
-    assert_eq!(v.zz(), Vec2::new(3.0, 3.0));
-}
-
-#[test]
-fn test_vector3_conversions() {
-    let v3 = Vec3::new(3.0, 4.0, 5.0);
-    let v2 = v3.vec2();
-    assert_eq!(v2, Vec2::new(3.0, 4.0));
-}
-
-#[test]
 fn test_vector3_default() {
     let v: Vec3 = Default::default();
     assert_eq!(v, Vec3::ZERO);

@@ -1,5 +1,6 @@
 use crate::math::{Vec2, Vec3, Vec4};
 
+#[macro_export]
 macro_rules! s {
     ($vec:expr, $($comp:tt)+) => {{
         let v = $vec;
