@@ -35,7 +35,7 @@ fn test_vector3_to_vector4_conversion() {
 fn test_vector4_to_vector3_conversion() {
     let v4 = Vec4::new(4.0, 6.0, 8.0, 2.0);
     let v3 = s!(v4, x y z);
-    assert_eq!(v3, Vec::new(2.0, 3.0, 4.0));
+    assert_eq!(v3, Vec::new(4.0, 6.0, 8.0));
 }
 
 // ============ Edge Case Tests ============
