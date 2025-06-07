@@ -401,6 +401,31 @@ impl Default for Vec3 {
 
 // Other Methods
 impl Vec3 {
+
+
+    /// Checks if two vectors are approximately equal within a default precision of 6 decimal places (micrometers)
+    /// This is useful for comparing floating-point vectors where exact equality
+    /// is not reliable due to precision issues.
+    /// # Arguments
+    /// * `other` - The other vector to compare against
+    pub fn equals(self, other: Vec3) -> bool {
+        self.equals_with_precision(other, 6)
+    }
+
+
+    /// Checks if two vectors are approximately equal within a given precision.
+    /// This is useful for comparing floating-point vectors where exact equality
+    /// is not reliable due to precision issues.
+    /// # Arguments
+    /// * `other` - The other vector to compare against
+    /// * `precision` - The number of decimal places to consider for equality
+    pub fn equals_with_precision(self, other: Vec3, precision: usize) -> bool {
+        let factor = 10f32.powi(precision as i32);
+        (self.x * factor).round() == (other.x * factor).round() &&
+            (self.y * factor).round() == (other.y * factor).round() &&
+            (self.z * factor).round() == (other.z * factor).round()
+    }
+
     /// Computes the dot product of two vectors.
     ///
     /// The dot product is a scalar value equal to the sum of the products
@@ -504,6 +529,12 @@ impl Vec3 {
     #[inline]
     pub fn magnitude(self) -> f32 {
         (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
+    }
+
+    /// Computes the length of the vector, which is the same as `magnitude()`.
+    #[inline]
+    pub  fn length(self) -> f32 {
+        self.magnitude()
     }
 
     /// Computes the squared magnitude of the vector.
@@ -1014,6 +1045,37 @@ mod tests {
             let a = Vec3::new(1.0, 2.0, 3.0);
             let b = Vec3::new(4.0, 5.0, 6.0);
             assert_eq!(a.dot(b), 32.0);
+        }
+
+        #[test]
+        fn test_vector3_equals_default_precision() {
+            let a = Vec3::new(1.0000001, 2.0, 3.0);
+            let b = Vec3::new(1.0000002, 2.0, 3.0);
+            assert!(a.equals(b)); // Should be equal at default precision (6)
+        }
+
+        #[test]
+        fn test_vector3_equals_with_precision_high() {
+            let a = Vec3::new(1.0000001, 2.0, 3.0);
+            let b = Vec3::new(1.0000009, 2.0, 3.0);
+            assert!(a.equals_with_precision(b, 6)); // Equal at 6 decimals
+            assert!(!a.equals_with_precision(b, 7)); // Not equal at 7 decimals
+        }
+
+        #[test]
+        fn test_vector3_equals_with_precision_low() {
+            let a = Vec3::new(1.001, 2.0, 3.0);
+            let b = Vec3::new(1.002, 2.0, 3.0);
+            assert!(a.equals_with_precision(b, 2)); // Equal at 2 decimals
+            assert!(!a.equals_with_precision(b, 3)); // Not equal at 3 decimals
+        }
+
+        #[test]
+        fn test_vector3_not_equals() {
+            let a = Vec3::new(1.0, 2.0, 3.0);
+            let b = Vec3::new(1.1, 2.0, 3.0);
+            assert!(!a.equals(b));
+            assert!(!a.equals_with_precision(b, 6));
         }
 
         #[test]

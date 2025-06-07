@@ -1,6 +1,6 @@
 mod vec3;
-mod vec2;
 mod vec4;
+mod vec2;
 
 // Re-export the main types for convenience
 pub use vec3::Vec3;
