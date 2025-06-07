@@ -175,7 +175,7 @@ impl From<(f32, f32, f32)> for Vec3 {
 /// use crate::forge_engine::math::Vec2;
 ///
 /// let v2 = Vec2::new(1.0, 2.0);
-/// let v3: Vec2 = v2.into();
+/// let v3: Vec = v2.into();
 /// assert_eq!(v3, Vec::new(1.0, 2.0, 0.0));
 /// ```
 impl From<Vec2> for Vec3 {
