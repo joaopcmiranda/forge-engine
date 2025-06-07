@@ -10,3 +10,4 @@ pub use vec4::Vec4;
 
 #[cfg(test)]
 mod tests;
+mod swizzle;

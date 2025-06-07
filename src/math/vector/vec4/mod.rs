@@ -157,6 +157,33 @@ impl Vec4 {
     };
 }
 
+// Accessors
+impl Vec4 {
+    /// Returns the x-component of the vector.
+    #[inline]
+    pub fn x(&self) -> f32 {
+        self.x
+    }
+
+    /// Returns the y-component of the vector.
+    #[inline]
+    pub fn y(&self) -> f32 {
+        self.y
+    }
+
+    /// Returns the z-component of the vector.
+    #[inline]
+    pub fn z(&self) -> f32 {
+        self.z
+    }
+
+    /// Returns the w-component of the vector.
+    #[inline]
+    pub fn w(&self) -> f32 {
+        self.w
+    }
+}
+
 /// Converts a tuple `(f32, f32, f32, f32)` into a `Vector4`.
 ///
 /// # Examples

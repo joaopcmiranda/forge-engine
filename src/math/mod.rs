@@ -1,5 +1,6 @@
 mod matrix;
 mod vector;
+mod complex;
 
 // Re-export the main types for convenience
 pub use vector::Vec;

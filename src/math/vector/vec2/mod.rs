@@ -37,7 +37,7 @@ use std::ops::{Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Vec2 {
     /// The x-component of the vector
-    pub x: f32,
+     pub x: f32,
     /// The y-component of the vector
     pub y: f32,
 }
@@ -103,6 +103,21 @@ impl Vec2 {
 
     /// The left direction vector: `(-1, 0)`
     pub const LEFT: Vec2 = Vec2 { x: -1.0, y: 0.0 };
+}
+
+// Accessors
+impl Vec2 {
+    /// Returns the x-component of the vector.
+    #[inline]
+    pub fn x(&self) -> f32 {
+        self.x
+    }
+
+    /// Returns the y-component of the vector.
+    #[inline]
+    pub fn y(&self) -> f32 {
+        self.y
+    }
 }
 
 /// Converts a tuple `(f32, f32)` into a `Vector2`.
