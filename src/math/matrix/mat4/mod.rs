@@ -2,7 +2,6 @@
 Constructors
 
 from_quaternion(Quaternion) - When you add quaternions later
-perspective(fov, aspect, near, far) - Projection matrix
 orthographic(left, right, bottom, top, near, far) - Ortho projection
 
 Decomposition
